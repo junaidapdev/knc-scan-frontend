@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
+import { KayanLogo } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { adminLogout } from '@/lib/adminApi';
@@ -21,11 +22,14 @@ export default function AdminTopbar(): JSX.Element {
 
   return (
     <header className="flex items-center justify-between border-b border-obsidian/10 bg-white px-6 py-3">
-      <div>
-        <p className="text-sm font-semibold text-obsidian">
-          {admin?.name ?? 'Admin'}
-        </p>
-        <p className="text-xs text-obsidian/60">{admin?.email ?? ''}</p>
+      <div className="flex items-center gap-4">
+        <KayanLogo lang="en" height={28} />
+        <div className="border-l border-obsidian/10 pl-4">
+          <p className="text-sm font-semibold text-obsidian">
+            {admin?.name ?? 'Admin'}
+          </p>
+          <p className="text-xs text-obsidian/60">{admin?.email ?? ''}</p>
+        </div>
       </div>
       <div className="flex items-center gap-3">
         <button

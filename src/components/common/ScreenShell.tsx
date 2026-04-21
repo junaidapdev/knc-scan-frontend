@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import KayanLogo from './KayanLogo';
 import LanguageToggle from './LanguageToggle';
 
 export interface ScreenShellProps {
@@ -33,12 +34,7 @@ export default function ScreenShell({
         Skip to content
       </a>
       <header className="flex items-center justify-between px-6 pt-6 pb-2">
-        <div
-          className="font-display text-[20px] tracking-[4px] text-obsidian"
-          aria-label="Kayan"
-        >
-          KAYAN
-        </div>
+        <KayanLogo height={36} />
         {showLanguageToggle ? <LanguageToggle /> : <span />}
       </header>
 

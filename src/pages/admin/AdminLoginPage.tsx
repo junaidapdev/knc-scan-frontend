@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
+import { KayanLogo } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { ApiCallError } from '@/lib/api';
@@ -53,8 +54,11 @@ export default function AdminLoginPage(): JSX.Element {
   return (
     <main className="flex min-h-screen items-center justify-center bg-canvas-bg px-4">
       <div className="w-full max-w-md rounded-lg border border-obsidian/10 bg-white p-8 shadow-lg">
+        <div className="mb-6 flex justify-center">
+          <KayanLogo lang="en" height={48} />
+        </div>
         <p className="text-eyebrow uppercase text-obsidian/60">
-          Kayan Admin Console
+          Admin Console
         </p>
         <h1 className="mt-2 font-display text-3xl uppercase tracking-[3px] text-obsidian">
           Sign in

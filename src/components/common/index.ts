@@ -7,3 +7,5 @@ export { default as ScreenShell } from './ScreenShell';
 export { default as RouteGuard } from './RouteGuard';
 export { default as AppErrorBoundary } from './AppErrorBoundary';
 export { default as Skeleton } from './Skeleton';
+export { default as KayanLogo } from './KayanLogo';
+export type { KayanLogoProps } from './KayanLogo';
