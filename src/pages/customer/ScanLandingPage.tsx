@@ -11,6 +11,7 @@ import {
 import { ROUTES } from '@/constants/routes';
 import { ANALYTICS_EVENTS, track } from '@/lib/analytics';
 import { useBranches } from '@/hooks/useBranches';
+import { useCustomerAuth } from '@/contexts/CustomerAuthContext';
 
 const QR_QUERY_PARAM = 'b';
 
@@ -20,6 +21,7 @@ export default function ScanLandingPage(): JSX.Element {
   const navigate = useNavigate();
   const qrIdentifier = params.get(QR_QUERY_PARAM);
   const { state, reload } = useBranches();
+  const auth = useCustomerAuth();
 
   const branch = useMemo(() => {
     if (state.status !== 'ready' || !qrIdentifier) return null;
@@ -52,7 +54,30 @@ export default function ScanLandingPage(): JSX.Element {
     );
   }
 
-  if (!qrIdentifier || !branch) {
+  // No code at all → treat as the "home" landing, not an error.
+  // Shown when the user opens / or /scan directly (e.g. from a home-screen
+  // PWA icon, or after tapping "Done" on the stamp success screen).
+  if (!qrIdentifier) {
+    return (
+      <ScreenShell
+        eyebrow={t('scan.eyebrow')}
+        title={t('scan.welcome.title')}
+        description={t('scan.welcome.body')}
+      >
+        {auth.session ? (
+          <BrandedButton
+            fullWidth
+            onClick={() => navigate(ROUTES.CUSTOMER.REWARDS)}
+          >
+            {t('scan.welcome.viewRewards')}
+          </BrandedButton>
+        ) : null}
+      </ScreenShell>
+    );
+  }
+
+  // Code provided but didn't match an active branch — real error.
+  if (!branch) {
     return (
       <ScreenShell
         eyebrow={t('scan.eyebrow')}

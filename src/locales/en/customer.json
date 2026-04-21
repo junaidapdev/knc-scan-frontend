@@ -10,6 +10,11 @@
       "body": "This QR code doesn't match an active Kayan branch. Please ask a staff member for help.",
       "cta": "Contact staff"
     },
+    "welcome": {
+      "title": "KAYAN SWEETS",
+      "body": "Scan the QR code at the counter to collect your stamp.",
+      "viewRewards": "View my rewards"
+    },
     "loading": "Finding your branch…"
   },
   "phone": {

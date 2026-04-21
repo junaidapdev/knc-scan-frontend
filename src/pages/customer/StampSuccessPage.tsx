@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import confetti from 'canvas-confetti';
@@ -80,22 +80,6 @@ export default function StampSuccessPage(): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-redirect registered users to /rewards after a short celebration.
-  const [secondsLeft, setSecondsLeft] = useState<number>(5);
-  useEffect(() => {
-    if (!auth.session) return;
-    const interval = window.setInterval(() => {
-      setSecondsLeft((s) => (s > 0 ? s - 1 : 0));
-    }, 1000);
-    return () => window.clearInterval(interval);
-  }, [auth.session]);
-
-  useEffect(() => {
-    if (auth.session && secondsLeft <= 0) {
-      navigate(ROUTES.CUSTOMER.REWARDS);
-    }
-  }, [auth.session, secondsLeft, navigate]);
-
   // Open without context → bounce to entry.
   if (!stateParams.scanResult && !stateParams.firstStamp) {
     return <Navigate to={ROUTES.CUSTOMER.SCAN} replace />;
@@ -145,14 +129,14 @@ export default function StampSuccessPage(): JSX.Element {
           >
             {t('stampSuccess.viewRewards')}
           </BrandedButton>
-        ) : null}
-        <BrandedButton
-          variant="secondary"
-          fullWidth
-          onClick={() => navigate(ROUTES.CUSTOMER.SCAN)}
-        >
-          {t('stampSuccess.done')}
-        </BrandedButton>
+        ) : (
+          <BrandedButton
+            fullWidth
+            onClick={() => navigate(ROUTES.ROOT)}
+          >
+            {t('stampSuccess.done')}
+          </BrandedButton>
+        )}
       </div>
       <InstallPromptBanner />
     </ScreenShell>
