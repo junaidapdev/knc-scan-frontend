@@ -1,0 +1,162 @@
+{
+  "scan": {
+    "eyebrow": "Welcome",
+    "title": "KAYAN SWEETS",
+    "branchLabel": "Branch",
+    "description": "Tap continue to collect your stamp.",
+    "cta": "Continue",
+    "invalid": {
+      "title": "Invalid scan code",
+      "body": "This QR code doesn't match an active Kayan branch. Please ask a staff member for help.",
+      "cta": "Contact staff"
+    },
+    "loading": "Finding your branch…"
+  },
+  "phone": {
+    "eyebrow": "Verify",
+    "title": "ENTER YOUR PHONE",
+    "description": "We'll use this to find your rewards card.",
+    "inputLabel": "Saudi mobile number",
+    "prefix": "+966",
+    "placeholder": "5XXXXXXXX",
+    "cta": "Continue",
+    "errors": {
+      "format": "Enter a 9-digit Saudi mobile starting with 5."
+    }
+  },
+  "registerOtp": {
+    "eyebrow": "Verify",
+    "title": "ENTER YOUR CODE",
+    "description": "We sent a 4-digit code to {{phone}}.",
+    "resendIn": "Resend in {{seconds}}s",
+    "resend": "Resend code",
+    "cta": "Verify",
+    "errors": {
+      "format": "Enter the 4-digit code you received."
+    }
+  },
+  "registerDetails": {
+    "eyebrow": "Register",
+    "title": "TELL US ABOUT YOU",
+    "description": "Takes less than 30 seconds.",
+    "nameLabel": "Full name",
+    "namePlaceholder": "e.g. Fatimah Al-Harbi",
+    "birthdayLabel": "Birthday",
+    "birthdayMonth": "Month",
+    "birthdayDay": "Day",
+    "preferredBranchLabel": "Preferred branch",
+    "languageLabel": "Preferred language",
+    "consentLabel": "I agree to receive promotional messages from Kayan Sweets.",
+    "cta": "Create my card",
+    "errors": {
+      "nameRequired": "Please enter your name.",
+      "branchRequired": "Please pick a branch.",
+      "consentRequired": "You must agree to continue."
+    }
+  },
+  "scanAmount": {
+    "eyebrow": "Your visit",
+    "title": "ENTER BILL AMOUNT",
+    "description": "Tell us your bill total so we can log this visit.",
+    "inputLabel": "Bill amount",
+    "currency": "SAR",
+    "quickPickLabel": "Quick pick",
+    "cta": "Earn my stamp",
+    "errors": {
+      "range": "Amount must be between {{min}} and {{max}} SAR.",
+      "required": "Enter an amount."
+    }
+  },
+  "stampSuccess": {
+    "eyebrow": "Stamped",
+    "title": "+1 STAMP",
+    "description": "Nice one, {{name}}. See you again soon.",
+    "progressLabel": "Your card",
+    "countLabel": "{{current}} of {{max}} stamps",
+    "nextReward": "Next reward at {{max}} stamps.",
+    "cardFull": "Card full! Your reward is ready.",
+    "viewRewards": "View my rewards",
+    "done": "Done"
+  },
+  "lockout": {
+    "eyebrow": "Already stamped",
+    "title": "COME BACK TOMORROW",
+    "description": "You've already earned a stamp today. Your next stamp is available {{when}}.",
+    "whenShortly": "shortly",
+    "cta": "Back to start"
+  },
+  "rewards": {
+    "eyebrow": "Your rewards",
+    "title": "MY REWARDS",
+    "description": "Your current progress and active rewards.",
+    "progressSection": "Progress",
+    "availableSection": "Available",
+    "historySection": "History",
+    "emptyAvailable": "No rewards to claim yet — keep earning stamps.",
+    "emptyHistory": "You haven't claimed any rewards yet.",
+    "claimCta": "Claim",
+    "statusPending": "Ready to claim",
+    "statusRedeemed": "Redeemed",
+    "statusExpired": "Expired",
+    "expiresOn": "Expires {{date}}",
+    "redeemedOn": "Redeemed {{date}}"
+  },
+  "rewardClaim": {
+    "eyebrow": "Redeem",
+    "title": "CLAIM AT BRANCH",
+    "description": "Show this screen to the cashier. They'll scan the branch QR to verify.",
+    "codeLabel": "Reward code",
+    "expiresLabel": "Expires {{date}}",
+    "cta": "Start redemption",
+    "notFound": "That reward could not be found."
+  },
+  "rewardConfirm": {
+    "eyebrow": "Show the cashier",
+    "title": "HAND OVER TO STAFF",
+    "description": "The cashier will confirm redemption below.",
+    "codeLabel": "Reward code",
+    "customerLabel": "For",
+    "cta": "Staff: confirm redeemed",
+    "cancelCta": "Cancel"
+  },
+  "rewardDone": {
+    "eyebrow": "Enjoy!",
+    "title": "REDEEMED",
+    "description": "Your reward has been redeemed. Thank you for visiting Kayan.",
+    "cta": "Back to rewards"
+  },
+  "errors": {
+    "network": "No connection. Please check your internet and try again.",
+    "rateLimited": "Too many attempts. Please wait and try again.",
+    "otpInvalid": "That code doesn't match. Check and try again.",
+    "otpExpired": "That code expired. Request a new one.",
+    "phoneInvalid": "Phone number format is not valid.",
+    "unknown": "Something went wrong. Please try again."
+  },
+  "install": {
+    "prompt": {
+      "title": "Add Kayan to your home screen",
+      "cta": "Install",
+      "dismiss": "Not now"
+    }
+  },
+  "offline": {
+    "title": "You're offline",
+    "description": "Check your connection and try again.",
+    "retry": "Try again"
+  },
+  "months": {
+    "1": "January",
+    "2": "February",
+    "3": "March",
+    "4": "April",
+    "5": "May",
+    "6": "June",
+    "7": "July",
+    "8": "August",
+    "9": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
+  }
+}

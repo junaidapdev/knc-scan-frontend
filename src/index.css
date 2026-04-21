@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base resets. Tailwind's Preflight covers most of this; add app-specific
+   defaults here. */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-canvas-bg text-obsidian antialiased font-sans;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+/* Arabic text falls back to Noto Sans Arabic via the sans stack; the explicit
+   lang selector lets us tighten tracking so AR doesn't inherit Latin spacing. */
+html[lang='ar'] body {
+  letter-spacing: 0;
+}
+
+/* Eyebrow tag helper — DM Sans 600, 10px, 3px tracking, uppercase. */
+.eyebrow {
+  @apply font-sans font-semibold uppercase text-eyebrow;
+}
+
+/* Animation: pulsing border for live "screenshot-proof" elements (5b). */
+@keyframes pulse-border {
+  0%,
+  100% {
+    border-color: rgba(255, 215, 0, 0.35);
+  }
+  50% {
+    border-color: rgba(255, 215, 0, 1);
+  }
+}
+
+.pulse-border {
+  animation: pulse-border 1.6s ease-in-out infinite;
+}
+
+/* A11y — visible focus ring on every focusable element, globally. */
+*:focus-visible {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}

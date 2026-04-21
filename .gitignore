@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# tsc -b artifacts from root TS config files (tailwind.config.ts, vite.config.ts)
+/tailwind.config.d.ts
+/tailwind.config.js
+/vite.config.d.ts
+/vite.config.js
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Editor / tooling
+.cursor/
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Workspace scratch files (NEVER commit these)
+CrossFix.md
+DeploymentFix.md
+TempNotes.md
+SCRATCH.md
+*Fix.md
+*Notes.md
+
+# Vite
+.vite/
+stats.html

@@ -1,0 +1,12 @@
+export { default as ScanLandingPage } from './ScanLandingPage';
+export { default as PhonePage } from './PhonePage';
+export { default as RegisterOtpPage } from './RegisterOtpPage';
+export { default as RegisterDetailsPage } from './RegisterDetailsPage';
+export { default as ScanAmountPage } from './ScanAmountPage';
+export { default as StampSuccessPage } from './StampSuccessPage';
+export { default as LockoutPage } from './LockoutPage';
+export { default as RewardsPage } from './RewardsPage';
+export { default as RewardClaimPage } from './RewardClaimPage';
+export { default as RewardConfirmPage } from './RewardConfirmPage';
+export { default as RewardDonePage } from './RewardDonePage';
+export { default as PlaceholderPage } from './PlaceholderPage';

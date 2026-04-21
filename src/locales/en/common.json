@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "Kayan Sweets",
+    "tagline": "Sweet rewards, every visit."
+  },
+  "actions": {
+    "continue": "Continue",
+    "back": "Back",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "resend": "Resend code",
+    "contactStaff": "Contact staff"
+  },
+  "status": {
+    "loading": "Loading…",
+    "comingSoon": "Coming soon",
+    "errorTitle": "Something went wrong",
+    "unknownError": "An unexpected error occurred."
+  },
+  "language": {
+    "label": "Language",
+    "switchToArabic": "العربية",
+    "switchToEnglish": "English"
+  },
+  "admin": {
+    "title": "Admin portal",
+    "description": "Manage customers, rewards, branches, and more."
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "كيان للحلويات",
+    "tagline": "مكافآت حلوة، كل زيارة."
+  },
+  "actions": {
+    "continue": "متابعة",
+    "back": "رجوع",
+    "retry": "حاول مرة أخرى",
+    "cancel": "إلغاء",
+    "submit": "إرسال",
+    "confirm": "تأكيد",
+    "resend": "إعادة إرسال الرمز",
+    "contactStaff": "تواصل مع الموظف"
+  },
+  "status": {
+    "loading": "جارٍ التحميل…",
+    "comingSoon": "قريباً",
+    "errorTitle": "حدث خطأ",
+    "unknownError": "حدث خطأ غير متوقع."
+  },
+  "language": {
+    "label": "اللغة",
+    "switchToArabic": "العربية",
+    "switchToEnglish": "English"
+  },
+  "admin": {
+    "title": "بوابة المشرف",
+    "description": "إدارة العملاء والمكافآت والفروع والمزيد."
+  }
+}
