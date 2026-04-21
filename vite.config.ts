@@ -39,7 +39,11 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
-        navigateFallback: '/offline.html',
+        // SPA shell — deep links like /scan?b=... must fall back to the
+        // app shell (index.html) so React Router can handle the route.
+        // Using /offline.html here caused the "You're offline" page to
+        // appear on every deep link, even when online.
+        navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api/],
         runtimeCaching: [
           {
