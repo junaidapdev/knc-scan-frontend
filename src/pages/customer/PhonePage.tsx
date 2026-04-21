@@ -62,6 +62,18 @@ export default function PhonePage(): JSX.Element {
           });
         }
         auth.setScan(lookup.scan_token, lookup.profile);
+
+        // 24h lockout check — if the customer already earned a stamp today,
+        // skip the bill-amount step and show the lockout screen directly.
+        // Asking for a bill amount we're just going to reject is bad UX.
+        const nextEligibleAt = lookup.profile.next_eligible_at;
+        if (nextEligibleAt && Date.parse(nextEligibleAt) > Date.now()) {
+          navigate(ROUTES.CUSTOMER.LOCKOUT, {
+            state: { nextEligibleAt },
+          });
+          return;
+        }
+
         navigate(ROUTES.CUSTOMER.SCAN_AMOUNT, {
           state: {
             branchId: stateFromScan.branchId,
