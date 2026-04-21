@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { motion, useReducedMotion } from 'framer-motion';
 
 import { BrandedButton, ScreenShell } from '@/components/common';
 import { CountdownPill } from '@/components/customer';
@@ -23,10 +24,9 @@ export default function RewardConfirmPage(): JSX.Element {
   const location = useLocation();
   const stateParams = (location.state ?? {}) as LocationState;
   const toastError = useApiErrorToast();
+  const reduceMotion = useReducedMotion();
   const [submitting, setSubmitting] = useState<boolean>(false);
 
-  // The step-1 redemption_token lives in memory only — if it's missing,
-  // the page was opened directly, so send the user back to start over.
   if (
     !stateParams.confirmation ||
     !stateParams.branchQrIdentifier ||
@@ -72,34 +72,49 @@ export default function RewardConfirmPage(): JSX.Element {
     <ScreenShell
       eyebrow={t('rewardConfirm.eyebrow')}
       title={t('rewardConfirm.title')}
-      description={t('rewardConfirm.description')}
+      description={t('rewardClaim.showToCashier')}
     >
-      <div className="rounded-lg border-[1.5px] border-yellow bg-yellow-tint p-6">
-        <p className="eyebrow text-obsidian/70">
-          {t('rewardConfirm.codeLabel')}
-        </p>
-        <p className="mt-2 font-mono text-[28px] tracking-[4px] text-obsidian">
-          {confirmation.summary.unique_code}
-        </p>
-        <p className="mt-4 font-display text-[20px] leading-tight text-obsidian">
-          {displayName}
-        </p>
-        {confirmation.summary.customer_name ? (
-          <p className="mt-1 font-sans text-[13px] text-obsidian/70">
-            {t('rewardConfirm.customerLabel')}:{' '}
-            {confirmation.summary.customer_name}
-          </p>
-        ) : null}
-        <div className="mt-5">
-          <CountdownPill
-            expiresAt={confirmation.summary.expires_at}
-            label={t('rewardClaim.expiresLabel', { date: '' }).replace(
-              /\s*$/,
-              '',
-            )}
+      <motion.div
+        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 40 }}
+        animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 26 }}
+        className="overflow-hidden rounded-t-3xl rounded-b-xl border-[1.5px] border-yellow bg-yellow-tint pb-6 shadow-[0_-10px_30px_-12px_rgba(13,13,13,0.18)]"
+      >
+        {/* Drag handle */}
+        <div className="flex items-center justify-center pt-3">
+          <span
+            aria-hidden="true"
+            className="h-1.5 w-12 rounded-full bg-obsidian/25"
           />
         </div>
-      </div>
+
+        <div className="px-6 pt-4">
+          <p className="eyebrow text-obsidian/70">
+            {t('rewardConfirm.codeLabel')}
+          </p>
+          <p className="mt-2 font-mono text-[28px] tracking-[4px] text-obsidian">
+            {confirmation.summary.unique_code}
+          </p>
+          <p className="mt-4 font-display text-[20px] leading-tight text-obsidian">
+            {displayName}
+          </p>
+          {confirmation.summary.customer_name ? (
+            <p className="mt-1 font-sans text-[13px] text-obsidian/70">
+              {t('rewardConfirm.customerLabel')}:{' '}
+              {confirmation.summary.customer_name}
+            </p>
+          ) : null}
+          <div className="mt-5">
+            <CountdownPill
+              expiresAt={confirmation.summary.expires_at}
+              label={t('rewardClaim.expiresLabel', { date: '' }).replace(
+                /\s*$/,
+                '',
+              )}
+            />
+          </div>
+        </div>
+      </motion.div>
 
       <div className="mt-6 space-y-2">
         <BrandedButton

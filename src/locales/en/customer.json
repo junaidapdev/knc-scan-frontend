@@ -19,7 +19,8 @@
   },
   "phone": {
     "eyebrow": "Verify",
-    "title": "ENTER YOUR PHONE",
+    "title": "Enter your mobile number",
+    "subtitle": "Let's start collecting your stamps",
     "description": "We'll use this to find your rewards card.",
     "inputLabel": "Saudi mobile number",
     "prefix": "+966",
@@ -104,7 +105,17 @@
     "statusRedeemed": "Redeemed",
     "statusExpired": "Expired",
     "expiresOn": "Expires {{date}}",
-    "redeemedOn": "Redeemed {{date}}"
+    "redeemedOn": "Redeemed {{date}}",
+    "welcome": "Welcome back, {{name}} 👋",
+    "visiting": "Visiting {{branch}}",
+    "cardTitle": "YOUR STAMP CARD",
+    "cardCountLabel": "{{current}} of {{max}} stamps",
+    "moreStampsUntilReward": "{{count}} more stamps until your reward!",
+    "rewardReady": "Your reward is ready 🎉",
+    "rateUs": {
+      "title": "Rate us on Google",
+      "subtitle": "Tell us how we're doing — it takes a moment."
+    }
   },
   "rewardClaim": {
     "eyebrow": "Redeem",
@@ -113,7 +124,9 @@
     "codeLabel": "Reward code",
     "expiresLabel": "Expires {{date}}",
     "cta": "Start redemption",
-    "notFound": "That reward could not be found."
+    "notFound": "That reward could not be found.",
+    "readyBadge": "REWARD READY",
+    "showToCashier": "Show this screen to your cashier"
   },
   "rewardConfirm": {
     "eyebrow": "Show the cashier",

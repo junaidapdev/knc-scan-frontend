@@ -9,3 +9,5 @@ export { default as AppErrorBoundary } from './AppErrorBoundary';
 export { default as Skeleton } from './Skeleton';
 export { default as KayanLogo } from './KayanLogo';
 export type { KayanLogoProps } from './KayanLogo';
+export { default as PageTransition } from './PageTransition';
+export type { PageTransitionProps } from './PageTransition';

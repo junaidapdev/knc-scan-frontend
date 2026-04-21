@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { motion, useReducedMotion } from 'framer-motion';
 
 import { BrandedButton, ScreenShell } from '@/components/common';
 import { PhoneInput } from '@/components/customer';
@@ -19,6 +20,53 @@ import {
 interface LocationState {
   branchId?: string;
   qrIdentifier?: string;
+}
+
+const HERO_EMOJI: ReadonlyArray<{
+  char: string;
+  className: string;
+}> = [
+  { char: '🍬', className: 'text-[28px]' },
+  { char: '⭐️', className: 'text-[22px]' },
+  { char: '🍭', className: 'text-[26px]' },
+  { char: '🎁', className: 'text-[24px]' },
+  { char: '✨', className: 'text-[20px]' },
+];
+
+function HeroCluster(): JSX.Element {
+  const reduceMotion = useReducedMotion();
+  return (
+    <div
+      className="mb-6 flex items-center justify-center gap-3"
+      aria-hidden="true"
+    >
+      {HERO_EMOJI.map((e, i) => (
+        <motion.span
+          key={e.char}
+          initial={
+            reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.7 }
+          }
+          animate={
+            reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }
+          }
+          transition={{
+            delay: 0.05 + i * 0.07,
+            type: 'spring',
+            stiffness: 320,
+            damping: 18,
+          }}
+          className={[
+            'inline-flex h-12 w-12 items-center justify-center rounded-full',
+            'bg-white shadow-[0_4px_14px_rgba(13,13,13,0.08)]',
+            'border-hairline border-obsidian/5',
+            e.className,
+          ].join(' ')}
+        >
+          {e.char}
+        </motion.span>
+      ))}
+    </div>
+  );
 }
 
 export default function PhonePage(): JSX.Element {
@@ -47,10 +95,6 @@ export default function PhonePage(): JSX.Element {
       const lookup = await scanLookup({ phone: fullPhone });
 
       if (lookup.exists && lookup.scan_token && lookup.profile) {
-        // Persist the session JWT too (Chunk 7) so returning customers can
-        // reach /rewards without re-doing OTP. The scan flow still uses the
-        // short-lived scan token explicitly via the service layer, so this
-        // does NOT alter the scan auth path.
         if (lookup.session_token && lookup.customer_id) {
           auth.setSession({
             token: lookup.session_token,
@@ -63,9 +107,6 @@ export default function PhonePage(): JSX.Element {
         }
         auth.setScan(lookup.scan_token, lookup.profile);
 
-        // 24h lockout check — if the customer already earned a stamp today,
-        // skip the bill-amount step and show the lockout screen directly.
-        // Asking for a bill amount we're just going to reject is bad UX.
         const nextEligibleAt = lookup.profile.next_eligible_at;
         if (nextEligibleAt && Date.parse(nextEligibleAt) > Date.now()) {
           navigate(ROUTES.CUSTOMER.LOCKOUT, {
@@ -83,8 +124,6 @@ export default function PhonePage(): JSX.Element {
         return;
       }
 
-      // Unknown customer → request OTP, route to register flow. The JWT is
-      // minted later by /auth/otp/verify on RegisterOtpPage.
       const otpRes = await requestOtp({ phone: fullPhone });
       navigate(ROUTES.CUSTOMER.REGISTER_OTP, {
         state: {
@@ -105,8 +144,12 @@ export default function PhonePage(): JSX.Element {
     <ScreenShell
       eyebrow={t('phone.eyebrow')}
       title={t('phone.title')}
-      description={t('phone.description')}
+      description={t('phone.subtitle')}
     >
+      <HeroCluster />
+      <p className="mb-6 font-sans text-[13px] leading-[1.6] text-obsidian/60">
+        {t('phone.description')}
+      </p>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <PhoneInput
           label={t('phone.inputLabel')}

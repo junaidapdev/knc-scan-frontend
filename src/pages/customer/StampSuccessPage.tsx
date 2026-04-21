@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { motion, useReducedMotion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
 import { BrandedButton, ScreenShell } from '@/components/common';
@@ -16,27 +17,18 @@ import type { ScanLookupProfile } from '@/interfaces/visit';
 interface LocationState {
   scanResult?: ScanResult;
   scanProfile?: ScanLookupProfile | null;
-  /**
-   * Provided by RegisterDetailsPage — the register_customer_and_visit RPC
-   * already grants the first stamp, so we can render the success state
-   * without refetching.
-   */
   firstStamp?: {
     current: number;
     name: string;
   };
 }
 
-/**
- * Shown after a successful scan or registration. Reads the freshly-minted
- * stamp data from navigation state — no refetch. Skipped to /scan if opened
- * directly without that state.
- */
 export default function StampSuccessPage(): JSX.Element {
   const { t } = useTranslation('customer');
   const navigate = useNavigate();
   const location = useLocation();
   const auth = useCustomerAuth();
+  const reduceMotion = useReducedMotion();
   const stateParams = useMemo<LocationState>(
     () => (location.state ?? {}) as LocationState,
     [location.state],
@@ -58,16 +50,15 @@ export default function StampSuccessPage(): JSX.Element {
     stampsCurrent >= STAMPS_PER_CARD ||
     Boolean(stateParams.scanResult?.ready_for_reward);
 
-  // Fire confetti + haptic + increment stamp count once per mount.
   useEffect(() => {
     if (!stateParams.scanResult && !stateParams.firstStamp) return;
     recordSuccessfulStamp();
     haptic(30);
-    const reduceMotion =
+    const reduceMotionMedia =
       typeof window !== 'undefined' &&
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduceMotion) {
+    if (!reduceMotionMedia) {
       confetti({
         particleCount: 80,
         spread: 70,
@@ -76,49 +67,92 @@ export default function StampSuccessPage(): JSX.Element {
         ticks: 160,
       });
     }
-    // Intentionally run once — celebration is per-landing, not per-state-change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Open without context → bounce to entry.
   if (!stateParams.scanResult && !stateParams.firstStamp) {
     return <Navigate to={ROUTES.CUSTOMER.SCAN} replace />;
   }
 
-  // Freshly-earned stamp sits at index (current - 1).
   const highlightIndex = stampsCurrent > 0 ? stampsCurrent - 1 : null;
 
   return (
     <ScreenShell
       eyebrow={t('stampSuccess.eyebrow')}
-      title={t('stampSuccess.title')}
       description={
         name
           ? t('stampSuccess.description', { name })
           : t('stampSuccess.description', { name: '' }).trim()
       }
     >
-      <div className="rounded-lg border-hairline border-obsidian/10 bg-white p-5">
-        <p className="eyebrow text-obsidian/60">
-          {t('stampSuccess.progressLabel')}
-        </p>
-        <p className="mt-2 font-mono text-[14px] text-obsidian">
-          {t('stampSuccess.countLabel', {
-            current: stampsCurrent,
-            max: STAMPS_PER_CARD,
-          })}
-        </p>
-        <div className="mt-4">
-          <StampProgressBar
-            current={stampsCurrent}
-            highlightIndex={highlightIndex}
+      {/* Animated title + checkmark */}
+      <div className="flex flex-col items-center">
+        <motion.span
+          aria-hidden="true"
+          initial={reduceMotion ? { opacity: 0 } : { scale: 0, opacity: 0 }}
+          animate={reduceMotion ? { opacity: 1 } : { scale: 1, opacity: 1 }}
+          transition={{
+            type: 'spring',
+            stiffness: 380,
+            damping: 18,
+            delay: 0.05,
+          }}
+          className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full bg-obsidian text-yellow text-[28px] leading-none"
+        >
+          ✓
+        </motion.span>
+        <motion.h1
+          initial={
+            reduceMotion ? { opacity: 0 } : { scale: 0.7, opacity: 0 }
+          }
+          animate={
+            reduceMotion ? { opacity: 1 } : { scale: 1, opacity: 1 }
+          }
+          transition={{
+            type: 'spring',
+            stiffness: 300,
+            damping: 16,
+            delay: 0.15,
+          }}
+          className="font-display text-display-md text-obsidian"
+        >
+          {t('stampSuccess.title')}
+        </motion.h1>
+      </div>
+
+      {/* Yellow burst behind card */}
+      <div className="relative mt-6">
+        {!reduceMotion ? (
+          <motion.div
+            aria-hidden="true"
+            initial={{ scale: 0.4, opacity: 0 }}
+            animate={{ scale: 1, opacity: 0.7 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow/40 blur-2xl"
           />
+        ) : null}
+        <div className="relative rounded-xl border-hairline border-obsidian/10 bg-white p-5 shadow-[0_10px_30px_-12px_rgba(13,13,13,0.15)]">
+          <p className="eyebrow text-obsidian/60">
+            {t('stampSuccess.progressLabel')}
+          </p>
+          <p className="mt-2 font-mono text-[14px] text-obsidian">
+            {t('stampSuccess.countLabel', {
+              current: stampsCurrent,
+              max: STAMPS_PER_CARD,
+            })}
+          </p>
+          <div className="mt-4">
+            <StampProgressBar
+              current={stampsCurrent}
+              highlightIndex={highlightIndex}
+            />
+          </div>
+          <p className="mt-4 font-sans text-[13px] text-obsidian/60">
+            {cardFull
+              ? t('stampSuccess.cardFull')
+              : t('stampSuccess.nextReward', { max: STAMPS_PER_CARD })}
+          </p>
         </div>
-        <p className="mt-4 font-sans text-[13px] text-obsidian/60">
-          {cardFull
-            ? t('stampSuccess.cardFull')
-            : t('stampSuccess.nextReward', { max: STAMPS_PER_CARD })}
-        </p>
       </div>
 
       <div className="mt-6 space-y-2">

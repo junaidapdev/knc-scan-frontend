@@ -3,6 +3,7 @@ import {
   type ButtonHTMLAttributes,
   type ReactNode,
 } from 'react';
+import { motion, useReducedMotion, type HTMLMotionProps } from 'framer-motion';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'md' | 'lg';
@@ -48,6 +49,8 @@ const BrandedButton = forwardRef<HTMLButtonElement, BrandedButtonProps>(
     },
     ref,
   ) {
+    const reduceMotion = useReducedMotion();
+
     const classes = [
       'inline-flex items-center justify-center gap-2 rounded-md',
       'font-sans font-semibold tracking-wide',
@@ -61,14 +64,21 @@ const BrandedButton = forwardRef<HTMLButtonElement, BrandedButtonProps>(
       .filter(Boolean)
       .join(' ');
 
+    const whileTap = reduceMotion ? undefined : { scale: 0.97 };
+    // Cast rest to a motion-compatible props bag — framer-motion narrows some
+    // DOM event types (e.g. onAnimationStart) which are incompatible with the
+    // native button handlers, but we never pass those in practice.
+    const motionRest = rest as HTMLMotionProps<'button'>;
+
     return (
-      <button
+      <motion.button
         ref={ref}
         type={type}
         className={classes}
         disabled={disabled || loading}
         aria-busy={loading || undefined}
-        {...rest}
+        whileTap={whileTap}
+        {...motionRest}
       >
         {loading ? (
           <span
@@ -79,7 +89,7 @@ const BrandedButton = forwardRef<HTMLButtonElement, BrandedButtonProps>(
           leadingIcon
         )}
         <span>{children}</span>
-      </button>
+      </motion.button>
     );
   },
 );

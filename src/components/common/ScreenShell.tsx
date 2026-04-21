@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 import KayanLogo from './KayanLogo';
 import LanguageToggle from './LanguageToggle';
+import PageTransition from './PageTransition';
 
 export interface ScreenShellProps {
   children: ReactNode;
@@ -39,21 +40,23 @@ export default function ScreenShell({
       </header>
 
       <main id="main" className="mx-auto flex w-full max-w-md flex-col px-6 pb-12 pt-8">
-        {eyebrow ? (
-          <p className="eyebrow text-obsidian/70">{eyebrow}</p>
-        ) : null}
-        {title ? (
-          <h1 className="mt-3 font-display text-display-md text-obsidian">
-            {title}
-          </h1>
-        ) : null}
-        {description ? (
-          <p className="mt-3 font-sans text-[14px] leading-[1.6] text-obsidian/70">
-            {description}
-          </p>
-        ) : null}
+        <PageTransition>
+          {eyebrow ? (
+            <p className="eyebrow text-obsidian/70">{eyebrow}</p>
+          ) : null}
+          {title ? (
+            <h1 className="mt-3 font-display text-display-md text-obsidian">
+              {title}
+            </h1>
+          ) : null}
+          {description ? (
+            <p className="mt-3 font-sans text-[14px] leading-[1.6] text-obsidian/70">
+              {description}
+            </p>
+          ) : null}
 
-        <div className="mt-8">{children}</div>
+          <div className="mt-8">{children}</div>
+        </PageTransition>
       </main>
 
       {footer ? (

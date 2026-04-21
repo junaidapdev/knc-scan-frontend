@@ -20,6 +20,7 @@
   "phone": {
     "eyebrow": "التحقق",
     "title": "أدخل رقم جوالك",
+    "subtitle": "لنبدأ بتجميع أختامك",
     "description": "سنستخدمه للعثور على بطاقة مكافآتك.",
     "inputLabel": "رقم الجوال السعودي",
     "prefix": "+٩٦٦",
@@ -104,7 +105,17 @@
     "statusRedeemed": "تم استبدالها",
     "statusExpired": "منتهية",
     "expiresOn": "تنتهي {{date}}",
-    "redeemedOn": "استُبدلت {{date}}"
+    "redeemedOn": "استُبدلت {{date}}",
+    "welcome": "أهلاً بعودتك، {{name}} 👋",
+    "visiting": "تزور فرع {{branch}}",
+    "cardTitle": "بطاقة الأختام",
+    "cardCountLabel": "{{current}} من {{max}} أختام",
+    "moreStampsUntilReward": "{{count}} أختام للحصول على مكافأتك!",
+    "rewardReady": "مكافأتك جاهزة 🎉",
+    "rateUs": {
+      "title": "قيّمنا على جوجل",
+      "subtitle": "أخبرنا عن رأيك — لن يستغرق الأمر سوى لحظة."
+    }
   },
   "rewardClaim": {
     "eyebrow": "استبدال",
@@ -113,7 +124,9 @@
     "codeLabel": "رمز المكافأة",
     "expiresLabel": "تنتهي {{date}}",
     "cta": "ابدأ الاستبدال",
-    "notFound": "تعذر العثور على تلك المكافأة."
+    "notFound": "تعذر العثور على تلك المكافأة.",
+    "readyBadge": "المكافأة جاهزة",
+    "showToCashier": "أظهر هذه الشاشة للكاشير"
   },
   "rewardConfirm": {
     "eyebrow": "أظهر للكاشير",
