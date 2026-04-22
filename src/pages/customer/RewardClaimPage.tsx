@@ -164,12 +164,15 @@ export default function RewardClaimPage(): JSX.Element {
 
       <div className="mt-6">
         <BranchSelect
-          label={t('registerDetails.preferredBranchLabel')}
-          placeholder={t('registerDetails.preferredBranchLabel')}
+          label={t('rewardClaim.selectBranchLabel')}
+          placeholder={t('rewardClaim.selectBranchPlaceholder')}
           branches={branchesState.branches}
           value={selectedBranchId}
           onChange={(e) => setSelectedBranchId(e.target.value)}
         />
+        <p className="mt-2 font-sans text-[12px] text-obsidian/60">
+          {t('rewardClaim.selectBranchHint')}
+        </p>
       </div>
 
       <div className="mt-6">

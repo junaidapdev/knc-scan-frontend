@@ -76,11 +76,16 @@
   "stampSuccess": {
     "eyebrow": "تم الختم",
     "title": "+١ ختم",
+    "cardCompleteEyebrow": "اكتملت البطاقة",
+    "cardCompleteTitle": "تم فتح المكافأة",
+    "cardCompleteDescription": "رائع يا {{name}}! مكافأتك جاهزة للاستبدال.",
+    "cardCompleteMessage": "أكملت بطاقتك — ستبدأ بطاقة جديدة في زيارتك القادمة.",
     "description": "أحسنت يا {{name}}. نراك مجددًا قريبًا.",
     "progressLabel": "بطاقتك",
     "countLabel": "{{current}} من {{max}} أختام",
     "nextReward": "المكافأة التالية عند {{max}} أختام.",
     "cardFull": "اكتملت البطاقة! مكافأتك جاهزة.",
+    "claimRewardCta": "استبدل مكافأتي",
     "viewRewards": "عرض مكافآتي",
     "done": "تم"
   },
@@ -112,6 +117,7 @@
     "cardCountLabel": "{{current}} من {{max}} أختام",
     "moreStampsUntilReward": "{{count}} أختام للحصول على مكافأتك!",
     "rewardReady": "مكافأتك جاهزة 🎉",
+    "rewardReadyBelow": "مكافأتك جاهزة — استبدلها في الأسفل 🎉",
     "rateUs": {
       "title": "قيّمنا على جوجل",
       "subtitle": "أخبرنا عن رأيك — لن يستغرق الأمر سوى لحظة."
@@ -126,7 +132,10 @@
     "cta": "ابدأ الاستبدال",
     "notFound": "تعذر العثور على تلك المكافأة.",
     "readyBadge": "المكافأة جاهزة",
-    "showToCashier": "أظهر هذه الشاشة للكاشير"
+    "showToCashier": "أظهر هذه الشاشة للكاشير",
+    "selectBranchLabel": "في أي فرع ستستبدل؟",
+    "selectBranchPlaceholder": "اختر الفرع",
+    "selectBranchHint": "اختر الفرع الذي ستستبدل فيه هذه المكافأة."
   },
   "rewardConfirm": {
     "eyebrow": "أظهر للكاشير",

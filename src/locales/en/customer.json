@@ -76,11 +76,16 @@
   "stampSuccess": {
     "eyebrow": "Stamped",
     "title": "+1 STAMP",
+    "cardCompleteEyebrow": "Card complete",
+    "cardCompleteTitle": "REWARD UNLOCKED",
+    "cardCompleteDescription": "Amazing, {{name}}! Your reward is ready to claim.",
+    "cardCompleteMessage": "You filled your card — a fresh one starts next visit.",
     "description": "Nice one, {{name}}. See you again soon.",
     "progressLabel": "Your card",
     "countLabel": "{{current}} of {{max}} stamps",
     "nextReward": "Next reward at {{max}} stamps.",
     "cardFull": "Card full! Your reward is ready.",
+    "claimRewardCta": "Claim my reward",
     "viewRewards": "View my rewards",
     "done": "Done"
   },
@@ -112,6 +117,7 @@
     "cardCountLabel": "{{current}} of {{max}} stamps",
     "moreStampsUntilReward": "{{count}} more stamps until your reward!",
     "rewardReady": "Your reward is ready 🎉",
+    "rewardReadyBelow": "Your reward is ready — claim it below 🎉",
     "rateUs": {
       "title": "Rate us on Google",
       "subtitle": "Tell us how we're doing — it takes a moment."
@@ -126,7 +132,10 @@
     "cta": "Start redemption",
     "notFound": "That reward could not be found.",
     "readyBadge": "REWARD READY",
-    "showToCashier": "Show this screen to your cashier"
+    "showToCashier": "Show this screen to your cashier",
+    "selectBranchLabel": "Claim at which branch?",
+    "selectBranchPlaceholder": "Choose a branch",
+    "selectBranchHint": "Pick the branch where you're claiming this reward."
   },
   "rewardConfirm": {
     "eyebrow": "Show the cashier",

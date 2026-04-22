@@ -220,6 +220,7 @@ export default function RewardsPage(): JSX.Element {
   const stampsNow = currentStamps ?? 0;
   const remaining = Math.max(STAMPS_PER_CARD - stampsNow, 0);
   const cardFull = stampsNow >= STAMPS_PER_CARD;
+  const hasPendingReward = available.length > 0;
 
   return (
     <ScreenShell
@@ -243,9 +244,11 @@ export default function RewardsPage(): JSX.Element {
           })}
         />
         <p className="mt-3 font-sans text-[14px] text-obsidian">
-          {cardFull
-            ? t('rewards.rewardReady')
-            : t('rewards.moreStampsUntilReward', { count: remaining })}
+          {hasPendingReward
+            ? t('rewards.rewardReadyBelow')
+            : cardFull
+              ? t('rewards.rewardReady')
+              : t('rewards.moreStampsUntilReward', { count: remaining })}
         </p>
       </section>
 

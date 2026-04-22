@@ -34,11 +34,19 @@ export default function StampSuccessPage(): JSX.Element {
     [location.state],
   );
 
+  // When a reward was just issued on this scan, the backend resets current_stamps to 0.
+  // Treat the scan as a completed card so the UI celebrates instead of showing "0 of 10".
+  const cardJustCompleted = Boolean(
+    stateParams.scanResult?.issued_reward ||
+      stateParams.scanResult?.ready_for_reward,
+  );
+
   const stampsCurrent = useMemo<number>(() => {
+    if (cardJustCompleted) return STAMPS_PER_CARD;
     if (stateParams.scanResult) return stateParams.scanResult.current_stamps;
     if (stateParams.firstStamp) return stateParams.firstStamp.current;
     return 0;
-  }, [stateParams]);
+  }, [stateParams, cardJustCompleted]);
 
   const name =
     stateParams.firstStamp?.name ??
@@ -46,9 +54,7 @@ export default function StampSuccessPage(): JSX.Element {
     stateParams.scanProfile?.name ??
     '';
 
-  const cardFull =
-    stampsCurrent >= STAMPS_PER_CARD ||
-    Boolean(stateParams.scanResult?.ready_for_reward);
+  const cardFull = cardJustCompleted || stampsCurrent >= STAMPS_PER_CARD;
 
   useEffect(() => {
     if (!stateParams.scanResult && !stateParams.firstStamp) return;
@@ -78,11 +84,17 @@ export default function StampSuccessPage(): JSX.Element {
 
   return (
     <ScreenShell
-      eyebrow={t('stampSuccess.eyebrow')}
+      eyebrow={
+        cardFull
+          ? t('stampSuccess.cardCompleteEyebrow')
+          : t('stampSuccess.eyebrow')
+      }
       description={
-        name
-          ? t('stampSuccess.description', { name })
-          : t('stampSuccess.description', { name: '' }).trim()
+        cardFull
+          ? t('stampSuccess.cardCompleteDescription', { name: name || '' }).trim()
+          : name
+            ? t('stampSuccess.description', { name })
+            : t('stampSuccess.description', { name: '' }).trim()
       }
     >
       {/* Animated title + checkmark */}
@@ -116,7 +128,9 @@ export default function StampSuccessPage(): JSX.Element {
           }}
           className="font-display text-display-md text-obsidian"
         >
-          {t('stampSuccess.title')}
+          {cardFull
+            ? t('stampSuccess.cardCompleteTitle')
+            : t('stampSuccess.title')}
         </motion.h1>
       </div>
 
@@ -161,7 +175,9 @@ export default function StampSuccessPage(): JSX.Element {
             fullWidth
             onClick={() => navigate(ROUTES.CUSTOMER.REWARDS)}
           >
-            {t('stampSuccess.viewRewards')}
+            {cardFull
+              ? t('stampSuccess.claimRewardCta')
+              : t('stampSuccess.viewRewards')}
           </BrandedButton>
         ) : (
           <BrandedButton
