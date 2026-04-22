@@ -109,7 +109,7 @@ export default function StampSuccessPage(): JSX.Element {
             damping: 18,
             delay: 0.05,
           }}
-          className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full bg-obsidian text-yellow text-[28px] leading-none"
+          className="mb-2 inline-flex h-12 w-12 items-center justify-center rounded-full bg-obsidian text-yellow text-[24px] leading-none"
         >
           ✓
         </motion.span>
@@ -135,33 +135,35 @@ export default function StampSuccessPage(): JSX.Element {
       </div>
 
       {/* Yellow burst behind card */}
-      <div className="relative mt-6">
+      <div className="relative mt-4">
         {!reduceMotion ? (
           <motion.div
             aria-hidden="true"
             initial={{ scale: 0.4, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.7 }}
+            animate={{ scale: 1, opacity: 0.6 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="pointer-events-none absolute left-1/2 top-1/2 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow/40 blur-2xl"
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow/40 blur-2xl"
           />
         ) : null}
-        <div className="relative rounded-xl border-hairline border-obsidian/10 bg-white p-5 shadow-[0_10px_30px_-12px_rgba(13,13,13,0.15)]">
-          <p className="eyebrow text-obsidian/60">
-            {t('stampSuccess.progressLabel')}
-          </p>
-          <p className="mt-2 font-mono text-[14px] text-obsidian">
-            {t('stampSuccess.countLabel', {
-              current: stampsCurrent,
-              max: STAMPS_PER_CARD,
-            })}
-          </p>
-          <div className="mt-4">
+        <div className="relative rounded-xl border-hairline border-obsidian/10 bg-white p-4 shadow-[0_10px_30px_-12px_rgba(13,13,13,0.15)]">
+          <div className="flex items-baseline justify-between gap-2">
+            <p className="eyebrow text-obsidian/60">
+              {t('stampSuccess.progressLabel')}
+            </p>
+            <p className="font-mono text-[13px] text-obsidian">
+              {t('stampSuccess.countLabel', {
+                current: stampsCurrent,
+                max: STAMPS_PER_CARD,
+              })}
+            </p>
+          </div>
+          <div className="mt-3">
             <StampProgressBar
               current={stampsCurrent}
               highlightIndex={highlightIndex}
             />
           </div>
-          <p className="mt-4 font-sans text-[13px] text-obsidian/60">
+          <p className="mt-3 font-sans text-[13px] text-obsidian/60">
             {cardFull
               ? t('stampSuccess.cardFull')
               : t('stampSuccess.nextReward', { max: STAMPS_PER_CARD })}
@@ -169,7 +171,7 @@ export default function StampSuccessPage(): JSX.Element {
         </div>
       </div>
 
-      <div className="mt-6 space-y-2">
+      <div className="mt-4 space-y-2">
         {auth.session ? (
           <BrandedButton
             fullWidth

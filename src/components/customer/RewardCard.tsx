@@ -48,25 +48,23 @@ export default function RewardCard({
         clickable ? 'hover:border-obsidian/40 cursor-pointer' : 'cursor-default',
       ].join(' ')}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-[22px] leading-tight text-obsidian truncate">
-            {name}
-          </p>
-          {description ? (
-            <p className="mt-1 font-sans text-[13px] leading-snug text-obsidian/60 line-clamp-2">
-              {description}
-            </p>
-          ) : null}
-        </div>
+      <div className="flex flex-col gap-2">
         <span
           className={[
-            'shrink-0 rounded-sm border-[1.5px] px-2 py-0.5 text-[11px] font-sans tracking-wider',
+            'self-start rounded-full border-[1.5px] px-2.5 py-0.5 text-[10px] font-sans font-semibold uppercase tracking-[1.5px]',
             STATUS_STYLES[reward.status],
           ].join(' ')}
         >
           {statusLabel}
         </span>
+        <p className="font-display text-[20px] leading-tight text-obsidian break-words">
+          {name}
+        </p>
+        {description ? (
+          <p className="font-sans text-[13px] leading-snug text-obsidian/60 line-clamp-2">
+            {description}
+          </p>
+        ) : null}
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-3">
