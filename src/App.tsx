@@ -10,9 +10,10 @@ import { AppErrorBoundary, RouteGuard } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
 import NotFoundPage from '@/pages/NotFoundPage';
 import {
+  HomePage,
   LockoutPage,
   PhonePage,
-  PlaceholderPage,
+  ProfilePage,
   RegisterDetailsPage,
   RegisterOtpPage,
   RewardClaimPage,
@@ -119,10 +120,18 @@ export default function App(): JSX.Element {
       />
 
       <Route
+        path={ROUTES.CUSTOMER.HOME}
+        element={
+          <RouteGuard require="session">
+            <HomePage />
+          </RouteGuard>
+        }
+      />
+      <Route
         path={ROUTES.CUSTOMER.PROFILE}
         element={
           <RouteGuard require="session">
-            <PlaceholderPage titleKey="Profile" />
+            <ProfilePage />
           </RouteGuard>
         }
       />

@@ -32,3 +32,7 @@ export const DEFAULT_LANGUAGE: SupportedLanguage = 'ar';
 
 export const I18N_NAMESPACES = ['common', 'customer'] as const;
 export type I18nNamespace = (typeof I18N_NAMESPACES)[number];
+
+// Shown in Profile footer. Kept here so it does not require a runtime
+// package.json import (vite config stays simple).
+export const APP_VERSION = '0.1.0';

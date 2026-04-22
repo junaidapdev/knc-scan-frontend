@@ -10,3 +10,5 @@ export { default as RewardClaimPage } from './RewardClaimPage';
 export { default as RewardConfirmPage } from './RewardConfirmPage';
 export { default as RewardDonePage } from './RewardDonePage';
 export { default as PlaceholderPage } from './PlaceholderPage';
+export { default as HomePage } from './HomePage';
+export { default as ProfilePage } from './ProfilePage';

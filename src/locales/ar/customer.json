@@ -172,6 +172,39 @@
     "description": "تحقق من اتصالك وحاول مرة أخرى.",
     "retry": "حاول مرة أخرى"
   },
+  "tabBar": {
+    "ariaLabel": "التنقل الرئيسي",
+    "home": "الرئيسية",
+    "rewards": "المكافآت",
+    "profile": "حسابي"
+  },
+  "home": {
+    "greetMorning": "صباح الخير",
+    "greetAfternoon": "مساء الخير",
+    "greetEvening": "طابت ليلتك",
+    "fallbackName": "بك",
+    "welcome": "مرحبًا، {{name}} 👋",
+    "description": "هذه بطاقة أختامك وتقدمك.",
+    "cardTitle": "بطاقة الأختام",
+    "cardCountLabel": "{{current}} من {{max}} أختام",
+    "moreStampsUntilReward": "{{count}} أختام للحصول على مكافأتك!",
+    "rewardReady": "مكافأتك جاهزة 🎉",
+    "rewardReadyBelow": "مكافأتك جاهزة — استبدلها من صفحة المكافآت 🎉",
+    "viewRewardsCta": "عرض مكافآتي",
+    "scanAtCounterTitle": "اجمع ختمك التالي",
+    "scanAtCounterBody": "امسح رمز الفرع عند الكاشير في زيارتك القادمة."
+  },
+  "profile": {
+    "eyebrow": "الحساب",
+    "title": "حسابي",
+    "description": "أدر حسابك وتفضيلاتك.",
+    "totalVisitsLabel": "إجمالي الزيارات",
+    "settingsSection": "الإعدادات",
+    "languageLabel": "اللغة",
+    "languageHint": "بدّل بين العربية والإنجليزية.",
+    "logoutCta": "تسجيل الخروج",
+    "versionLabel": "v{{version}}"
+  },
   "months": {
     "1": "يناير",
     "2": "فبراير",

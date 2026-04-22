@@ -172,6 +172,39 @@
     "description": "Check your connection and try again.",
     "retry": "Try again"
   },
+  "tabBar": {
+    "ariaLabel": "Primary navigation",
+    "home": "Home",
+    "rewards": "Rewards",
+    "profile": "Profile"
+  },
+  "home": {
+    "greetMorning": "Good morning",
+    "greetAfternoon": "Good afternoon",
+    "greetEvening": "Good evening",
+    "fallbackName": "there",
+    "welcome": "Hello, {{name}} 👋",
+    "description": "Here's your stamp card and progress.",
+    "cardTitle": "YOUR STAMP CARD",
+    "cardCountLabel": "{{current}} of {{max}} stamps",
+    "moreStampsUntilReward": "{{count}} more stamps until your reward!",
+    "rewardReady": "Your reward is ready 🎉",
+    "rewardReadyBelow": "Your reward is ready — claim it from Rewards 🎉",
+    "viewRewardsCta": "View my rewards",
+    "scanAtCounterTitle": "EARN YOUR NEXT STAMP",
+    "scanAtCounterBody": "Scan the branch QR at the counter on your next visit."
+  },
+  "profile": {
+    "eyebrow": "Account",
+    "title": "MY PROFILE",
+    "description": "Manage your account and preferences.",
+    "totalVisitsLabel": "Total visits",
+    "settingsSection": "Settings",
+    "languageLabel": "Language",
+    "languageHint": "Switch between English and Arabic.",
+    "logoutCta": "Log out",
+    "versionLabel": "v{{version}}"
+  },
   "months": {
     "1": "January",
     "2": "February",

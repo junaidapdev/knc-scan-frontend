@@ -19,6 +19,7 @@ export const ROUTES = {
     REWARD_CLAIM_PATTERN: '/rewards/:code/claim',
     REWARD_CONFIRM_PATTERN: '/rewards/:code/confirm',
     REWARD_DONE_PATTERN: '/rewards/:code/done',
+    HOME: '/home',
     PROFILE: '/profile',
   },
   ADMIN: {
