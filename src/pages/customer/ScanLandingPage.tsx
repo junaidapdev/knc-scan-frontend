@@ -45,7 +45,6 @@ interface HeroState {
   pillText: string;
   title: string;
   body: string;
-  showWatermark: boolean;
 }
 
 function HeroCard({
@@ -57,78 +56,66 @@ function HeroCard({
   branchName?: string;
   branchCity?: string;
 }): JSX.Element {
+  // The Kayan brand logo is black-on-yellow native, so it can only sit on a
+  // yellow ground. On the obsidian "invalid" state we fall back to the
+  // smaller ١٠ brand mark in inverted colors.
+  const showFullLogo = state.bg === '#FFD700';
+
   return (
     <div
-      className="relative flex flex-1 flex-col justify-between overflow-hidden rounded-3xl"
+      className="relative flex flex-1 flex-col overflow-hidden rounded-3xl"
       style={{
-        padding: 28,
+        padding: 24,
         background: state.bg,
         color: state.fg,
         border: '2px solid #0D0D0D',
         minHeight: 360,
       }}
     >
-      {/* ١٠ watermark */}
-      {state.showWatermark ? (
+      {/* Status pill — top */}
+      <span
+        className="inline-flex items-center gap-2 self-start font-sans font-bold uppercase"
+        style={{
+          padding: '5px 11px',
+          borderRadius: 4,
+          background: state.pillBg,
+          color: state.pillFg,
+          fontSize: 10,
+          letterSpacing: 1.8,
+        }}
+      >
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute select-none"
           style={{
-            right: -30,
-            top: 30,
-            bottom: 30,
-            width: 220,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: '"Noto Naskh Arabic", system-ui, sans-serif',
-            fontWeight: 700,
-            fontSize: 280,
-            lineHeight: 0.8,
-            color: '#0D0D0D',
-            opacity: 0.08,
-            letterSpacing: -8,
+            width: 6,
+            height: 6,
+            borderRadius: 999,
+            background: state.pillFg,
+            display: 'inline-block',
           }}
-        >
-          ١٠
-        </span>
-      ) : null}
+        />
+        {state.pillText}
+      </span>
 
-      <div className="relative">
-        <span
-          className="inline-flex items-center gap-2 font-sans font-bold uppercase"
-          style={{
-            padding: '5px 11px',
-            borderRadius: 4,
-            background: state.pillBg,
-            color: state.pillFg,
-            fontSize: 10,
-            letterSpacing: 1.8,
-          }}
-        >
-          <span
-            aria-hidden="true"
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: 999,
-              background: state.pillFg,
-              display: 'inline-block',
-            }}
-          />
-          {state.pillText}
-        </span>
+      {/* Brand logo — centered, the focal element */}
+      <div className="flex flex-1 items-center justify-center py-6">
+        {showFullLogo ? (
+          <KayanLogo height={108} className="select-none" />
+        ) : (
+          <KSLogoMark size={88} />
+        )}
       </div>
 
-      <div className="relative">
+      {/* Headline + body */}
+      <div>
         <h1
           className="font-display font-black"
           style={{
-            fontSize: 40,
+            fontSize: 36,
             lineHeight: 0.95,
-            letterSpacing: '-1.4px',
+            letterSpacing: '-1.2px',
             margin: 0,
-            maxWidth: 260,
+            maxWidth: 280,
           }}
         >
           {state.title}
@@ -136,50 +123,66 @@ function HeroCard({
         <p
           className="font-sans font-medium"
           style={{
-            marginTop: 14,
+            marginTop: 12,
             fontSize: 14,
             lineHeight: 1.5,
-            maxWidth: 280,
+            maxWidth: 320,
             color:
-              state.fg === '#FFD700' ? 'rgba(255,215,0,0.85)' : 'rgba(13,13,13,0.78)',
+              state.fg === '#FFD700'
+                ? 'rgba(255,215,0,0.85)'
+                : 'rgba(13,13,13,0.78)',
           }}
         >
           {state.body}
         </p>
 
         {branchName ? (
-          <div
-            className="mt-5 flex items-center justify-between gap-3 rounded-xl"
-            style={{
-              padding: '14px 16px',
-              background: '#FFFFFF',
-              border: '1.5px solid #0D0D0D',
-            }}
-          >
-            <div>
-              <p
-                className="font-sans font-bold uppercase text-obsidian/55"
-                style={{ fontSize: 10, letterSpacing: 1.5 }}
-              >
-                {/* "You're at" */}
-              </p>
-              <p
-                className="font-display font-black text-obsidian"
-                style={{ fontSize: 18, letterSpacing: '-0.4px', marginTop: 2 }}
-              >
-                {branchName}
-              </p>
-              {branchCity ? (
+          <>
+            {/* Dashed perforation — boarding-pass divider */}
+            <div
+              aria-hidden="true"
+              className="my-4"
+              style={{
+                height: 0,
+                borderTop: '1.5px dashed #0D0D0D',
+                opacity: 0.4,
+              }}
+            />
+
+            {/* Branch tile */}
+            <div
+              className="flex items-center justify-between gap-3 rounded-xl"
+              style={{
+                padding: '14px 16px',
+                background: '#FFFFFF',
+                border: '1.5px solid #0D0D0D',
+              }}
+            >
+              <div>
                 <p
-                  className="font-sans font-medium text-obsidian/65"
-                  style={{ fontSize: 12 }}
+                  className="font-sans font-bold uppercase text-obsidian/55"
+                  style={{ fontSize: 10, letterSpacing: 1.5 }}
                 >
-                  {branchCity}
+                  {/* "You're at" */}
                 </p>
-              ) : null}
+                <p
+                  className="font-display font-black text-obsidian"
+                  style={{ fontSize: 18, letterSpacing: '-0.4px', marginTop: 2 }}
+                >
+                  {branchName}
+                </p>
+                {branchCity ? (
+                  <p
+                    className="font-sans font-medium text-obsidian/65"
+                    style={{ fontSize: 12 }}
+                  >
+                    {branchCity}
+                  </p>
+                ) : null}
+              </div>
+              <KSLogoMark size={36} />
             </div>
-            <KSLogoMark size={36} />
-          </div>
+          </>
         ) : null}
       </div>
     </div>
@@ -231,7 +234,6 @@ export default function ScanLandingPage(): JSX.Element {
       pillText: t('scan.welcomePill'),
       title: t('scan.welcome.title'),
       body: t('scan.welcome.body'),
-      showWatermark: true,
     };
     return (
       <Shell>
@@ -260,7 +262,6 @@ export default function ScanLandingPage(): JSX.Element {
       pillText: t('scan.invalidPill'),
       title: t('scan.invalid.title'),
       body: t('scan.invalid.body'),
-      showWatermark: false,
     };
     return (
       <Shell>
@@ -287,7 +288,6 @@ export default function ScanLandingPage(): JSX.Element {
     pillText: t('scan.confirmedPill'),
     title: t('scan.confirmed.title'),
     body: t('scan.confirmed.body'),
-    showWatermark: true,
   };
 
   const handleContinue = (): void => {
