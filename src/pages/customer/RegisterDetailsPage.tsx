@@ -33,6 +33,7 @@ interface LocationState {
   phone?: string;
   branchId?: string;
   qrIdentifier?: string;
+  bill_amount?: number;
 }
 
 export default function RegisterDetailsPage(): JSX.Element {
@@ -69,6 +70,23 @@ export default function RegisterDetailsPage(): JSX.Element {
     return <Navigate to={ROUTES.CUSTOMER.PHONE} replace />;
   }
 
+  // Bill amount is collected on the preceding /register/amount step. If a user
+  // navigates here directly (back-button, refresh wiping state, etc.) we must
+  // send them back so the amount is captured before registration commits.
+  if (typeof stateParams.bill_amount !== 'number') {
+    return (
+      <Navigate
+        to={ROUTES.CUSTOMER.REGISTER_AMOUNT}
+        replace
+        state={{
+          phone: stateParams.phone,
+          branchId: stateParams.branchId,
+          qrIdentifier: stateParams.qrIdentifier,
+        }}
+      />
+    );
+  }
+
   const onSubmit = async (values: RegisterFormValues): Promise<void> => {
     if (!stateParams.branchId) {
       toastError(new Error(t('errors.unknown')));
@@ -86,6 +104,7 @@ export default function RegisterDetailsPage(): JSX.Element {
           language: values.language,
           consent_marketing: true,
           branch_scan_id: stateParams.branchId,
+          bill_amount: stateParams.bill_amount as number,
         },
         auth.registrationToken as string,
       );

@@ -8,6 +8,7 @@ export const ROUTES = {
     SCAN: '/scan',
     PHONE: '/phone',
     REGISTER_OTP: '/register/otp',
+    REGISTER_AMOUNT: '/register/amount',
     REGISTER_DETAILS: '/register/details',
     SCAN_AMOUNT: '/scan/amount',
     STAMP_SUCCESS: '/stamp-success',

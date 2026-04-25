@@ -14,6 +14,7 @@ import {
   LockoutPage,
   PhonePage,
   ProfilePage,
+  RegisterAmountPage,
   RegisterDetailsPage,
   RegisterOtpPage,
   RewardClaimPage,
@@ -60,6 +61,15 @@ export default function App(): JSX.Element {
       <Route
         path={ROUTES.CUSTOMER.REGISTER_OTP}
         element={<RegisterOtpPage />}
+      />
+
+      <Route
+        path={ROUTES.CUSTOMER.REGISTER_AMOUNT}
+        element={
+          <RouteGuard require="registration-token">
+            <RegisterAmountPage />
+          </RouteGuard>
+        }
       />
 
       <Route

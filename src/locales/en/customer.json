@@ -60,6 +60,9 @@
       "consentRequired": "You must agree to continue."
     }
   },
+  "registerAmount": {
+    "cta": "Continue"
+  },
   "scanAmount": {
     "eyebrow": "Your visit",
     "title": "ENTER BILL AMOUNT",

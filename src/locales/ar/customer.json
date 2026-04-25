@@ -60,6 +60,9 @@
       "consentRequired": "يجب الموافقة للمتابعة."
     }
   },
+  "registerAmount": {
+    "cta": "متابعة"
+  },
   "scanAmount": {
     "eyebrow": "زيارتك",
     "title": "أدخل قيمة الفاتورة",

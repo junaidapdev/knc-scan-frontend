@@ -54,7 +54,7 @@ export default function RegisterOtpPage(): JSX.Element {
     try {
       const res = await verifyOtp({ phone, otp: code });
       auth.setRegistration(res.token, phone);
-      navigate(ROUTES.CUSTOMER.REGISTER_DETAILS, {
+      navigate(ROUTES.CUSTOMER.REGISTER_AMOUNT, {
         state: { branchId, qrIdentifier, phone },
       });
     } catch (err) {

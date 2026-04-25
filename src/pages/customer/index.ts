@@ -1,6 +1,7 @@
 export { default as ScanLandingPage } from './ScanLandingPage';
 export { default as PhonePage } from './PhonePage';
 export { default as RegisterOtpPage } from './RegisterOtpPage';
+export { default as RegisterAmountPage } from './RegisterAmountPage';
 export { default as RegisterDetailsPage } from './RegisterDetailsPage';
 export { default as ScanAmountPage } from './ScanAmountPage';
 export { default as StampSuccessPage } from './StampSuccessPage';

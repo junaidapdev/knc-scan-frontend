@@ -10,4 +10,5 @@ export interface RegisterPayload {
   language: SupportedLanguage;
   consent_marketing: true;
   branch_scan_id: string;
+  bill_amount: number;
 }
