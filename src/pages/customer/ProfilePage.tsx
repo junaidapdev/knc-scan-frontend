@@ -7,7 +7,7 @@ import {
   LanguageToggle,
   PageTransition,
 } from '@/components/common';
-import { TabBar } from '@/components/customer';
+import { InstallAppRow, TabBar } from '@/components/customer';
 import { APP_VERSION } from '@/constants/ui';
 import { ROUTES } from '@/constants/routes';
 import { useCustomerAuth } from '@/contexts/CustomerAuthContext';
@@ -177,6 +177,7 @@ export default function ProfilePage(): JSX.Element {
               className="overflow-hidden rounded-2xl bg-white"
               style={{ border: '1.5px solid #0D0D0D' }}
             >
+              <InstallAppRow />
               <div className="flex items-center justify-between gap-3 px-4 py-3.5">
                 <div className="min-w-0 flex-1">
                   <p
