@@ -8,6 +8,8 @@ export { default as LanguageToggle } from './LanguageToggle';
 export { default as LoadingSkeleton } from './LoadingSkeleton';
 export { default as ErrorFallback } from './ErrorFallback';
 export { default as ScreenShell } from './ScreenShell';
+export { default as OnboardingShell } from './OnboardingShell';
+export type { OnboardingShellProps } from './OnboardingShell';
 export { default as RouteGuard } from './RouteGuard';
 export { default as AppErrorBoundary } from './AppErrorBoundary';
 export { default as Skeleton } from './Skeleton';

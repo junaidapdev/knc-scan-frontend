@@ -4,15 +4,22 @@
     "title": "KAYAN SWEETS",
     "branchLabel": "Branch",
     "description": "Tap continue to collect your stamp.",
-    "cta": "Continue",
+    "cta": "Continue to earn stamp →",
+    "confirmedPill": "Branch confirmed",
+    "welcomePill": "Welcome back",
+    "invalidPill": "QR not recognized",
+    "confirmed": {
+      "title": "A sweet visit awaits.",
+      "body": "We've matched the QR to a branch. Tap below to record your visit."
+    },
     "invalid": {
-      "title": "Invalid scan code",
-      "body": "This QR code doesn't match an active Kayan branch. Please ask a staff member for help.",
-      "cta": "Contact staff"
+      "title": "We don't know that branch.",
+      "body": "This QR didn't match an active branch. Please ask a staff member.",
+      "cta": "Try scanning again"
     },
     "welcome": {
-      "title": "KAYAN SWEETS",
-      "body": "Scan the QR code at the counter to collect your stamp.",
+      "title": "Scan to earn a stamp.",
+      "body": "Scan the QR at the counter on your next visit to collect a stamp.",
       "viewRewards": "View my rewards"
     },
     "loading": "Finding your branch…"
@@ -20,12 +27,16 @@
   "phone": {
     "eyebrow": "Verify",
     "title": "Enter your mobile number",
+    "stepLabel": "STEP 01 / 03",
+    "headlinePre": "Your number,",
+    "headlineMark": "please.",
     "subtitle": "Let's start collecting your stamps",
-    "description": "We'll use this to find your rewards card.",
-    "inputLabel": "Saudi mobile number",
+    "description": "We'll text a 4-digit code. Your number is your loyalty card.",
+    "terms": "By continuing you agree to our Terms and Privacy Policy.",
+    "inputLabel": "Mobile number",
     "prefix": "+966",
     "placeholder": "5XXXXXXXX",
-    "cta": "Continue",
+    "cta": "Send verification code",
     "errors": {
       "format": "Enter a 9-digit Saudi mobile starting with 5."
     }
@@ -33,7 +44,13 @@
   "registerOtp": {
     "eyebrow": "Verify",
     "title": "ENTER YOUR CODE",
+    "stepLabel": "STEP 02 / 03",
+    "headlinePre": "Check your",
+    "headlineMark": "messages.",
     "description": "We sent a 4-digit code to {{phone}}.",
+    "descriptionPre": "Sent to",
+    "didntGet": "Didn't get it?",
+    "devCode": "code is",
     "resendIn": "Resend in {{seconds}}s",
     "resend": "Resend code",
     "cta": "Verify",
@@ -44,7 +61,9 @@
   "registerDetails": {
     "eyebrow": "Register",
     "title": "TELL US ABOUT YOU",
-    "description": "Takes less than 30 seconds.",
+    "headlinePre": "Your",
+    "headlineMark": "sweet card.",
+    "description": "A few details, then you're stamped & in.",
     "nameLabel": "Full name",
     "namePlaceholder": "e.g. Fatimah Al-Harbi",
     "birthdayLabel": "Birthday",
@@ -66,7 +85,11 @@
   "scanAmount": {
     "eyebrow": "Your visit",
     "title": "ENTER BILL AMOUNT",
-    "description": "Tell us your bill total so we can log this visit.",
+    "stepLabelRegister": "STEP 03 / 03",
+    "stepLabelReturning": "ALMOST THERE",
+    "headlinePre": "What's the",
+    "headlineMark": "bill total?",
+    "description": "We log it with your stamp so we know which treats deserve more shelf space.",
     "inputLabel": "Bill amount",
     "currency": "SAR",
     "quickPickLabel": "Quick pick",
@@ -79,25 +102,42 @@
   "stampSuccess": {
     "eyebrow": "Stamped",
     "title": "+1 STAMP",
+    "pillStamp": "● Stamp #{{n}} added",
+    "pillComplete": "✦ Card complete",
+    "headline": "Sweet,\n{{name}}.",
+    "headlineFallback": "Sweet.",
+    "cardCompleteHeadline": "It's all\nyours.",
     "cardCompleteEyebrow": "Card complete",
     "cardCompleteTitle": "REWARD UNLOCKED",
     "cardCompleteDescription": "Amazing, {{name}}! Your reward is ready to claim.",
     "cardCompleteMessage": "You filled your card — a fresh one starts next visit.",
     "description": "Nice one, {{name}}. See you again soon.",
+    "yourCardLabel": "Your card",
     "progressLabel": "Your card",
     "countLabel": "{{current}} of {{max}} stamps",
-    "nextReward": "Next reward at {{max}} stamps.",
-    "cardFull": "Card full! Your reward is ready.",
-    "claimRewardCta": "Claim my reward",
+    "nextReward": "Stamp added. {{count}} more visits and dessert is on the house.",
+    "cardFull": "You filled the card. A free dessert tray is waiting in Rewards.",
+    "claimRewardCta": "Claim your reward →",
     "viewRewards": "View my rewards",
     "done": "Done"
   },
   "lockout": {
     "eyebrow": "Already stamped",
     "title": "COME BACK TOMORROW",
+    "stampedBadge": "✓ stamped",
+    "headlinePre": "Already had your",
+    "headlineMark": "sweet today.",
+    "body": "We only add one stamp per day so the card stays fair for everyone.",
+    "nextLabel": "Next stamp unlocks",
+    "nextLine": "Tomorrow at",
     "description": "You've already earned a stamp today. Your next stamp is available {{when}}.",
     "whenShortly": "shortly",
     "cta": "Back to start"
+  },
+  "notFound": {
+    "headline": "Crumbs.",
+    "body": "We can't find that page. It may have been replaced with something tastier.",
+    "cta": "Take me home"
   },
   "rewards": {
     "eyebrow": "Your rewards",

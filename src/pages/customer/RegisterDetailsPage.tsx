@@ -8,7 +8,7 @@ import {
   BrandedButton,
   ErrorFallback,
   LoadingSkeleton,
-  ScreenShell,
+  OnboardingShell,
 } from '@/components/common';
 import {
   BirthdayPicker,
@@ -70,9 +70,6 @@ export default function RegisterDetailsPage(): JSX.Element {
     return <Navigate to={ROUTES.CUSTOMER.PHONE} replace />;
   }
 
-  // Bill amount is collected on the preceding /register/amount step. If a user
-  // navigates here directly (back-button, refresh wiping state, etc.) we must
-  // send them back so the amount is captured before registration commits.
   if (typeof stateParams.bill_amount !== 'number') {
     return (
       <Navigate
@@ -138,38 +135,59 @@ export default function RegisterDetailsPage(): JSX.Element {
 
   if (branchesState.status === 'loading') {
     return (
-      <ScreenShell
-        eyebrow={t('registerDetails.eyebrow')}
-        title={t('registerDetails.title')}
+      <OnboardingShell
+        onBack={() => navigate(-1)}
+        headlinePre={t('registerDetails.headlinePre')}
+        headlineMark={t('registerDetails.headlineMark')}
+        headlineBreak={false}
+        description={t('registerDetails.description')}
       >
-        <LoadingSkeleton className="h-12 w-full" />
-        <LoadingSkeleton className="mt-4 h-12 w-full" />
-        <LoadingSkeleton className="mt-4 h-12 w-full" />
-      </ScreenShell>
+        <LoadingSkeleton className="h-12 w-full rounded-xl" />
+        <div className="h-3" />
+        <LoadingSkeleton className="h-12 w-full rounded-xl" />
+        <div className="h-3" />
+        <LoadingSkeleton className="h-12 w-full rounded-xl" />
+      </OnboardingShell>
     );
   }
 
   if (branchesState.status === 'error') {
     return (
-      <ScreenShell
-        eyebrow={t('registerDetails.eyebrow')}
-        title={t('registerDetails.title')}
+      <OnboardingShell
+        onBack={() => navigate(-1)}
+        headlinePre={t('registerDetails.headlinePre')}
+        headlineMark={t('registerDetails.headlineMark')}
+        headlineBreak={false}
       >
         <ErrorFallback onRetry={reload} />
-      </ScreenShell>
+      </OnboardingShell>
     );
   }
 
   return (
-    <ScreenShell
-      eyebrow={t('registerDetails.eyebrow')}
-      title={t('registerDetails.title')}
+    <OnboardingShell
+      onBack={() => navigate(-1)}
+      headlinePre={t('registerDetails.headlinePre')}
+      headlineMark={t('registerDetails.headlineMark')}
+      headlineBreak={false}
       description={t('registerDetails.description')}
+      scrollable
+      footer={
+        <BrandedButton
+          type="submit"
+          form="register-form"
+          fullWidth
+          loading={submitting}
+        >
+          {t('registerDetails.cta')}
+        </BrandedButton>
+      }
     >
       <form
+        id="register-form"
         onSubmit={handleSubmit(onSubmit)}
         noValidate
-        className="space-y-5"
+        className="space-y-4"
       >
         <TextInput
           label={t('registerDetails.nameLabel')}
@@ -241,20 +259,44 @@ export default function RegisterDetailsPage(): JSX.Element {
           )}
         />
 
-        <ConsentCheckbox
-          label={t('registerDetails.consentLabel')}
-          error={
-            errors.consent_marketing
-              ? t('registerDetails.errors.consentRequired')
-              : undefined
-          }
-          {...register('consent_marketing')}
-        />
-
-        <BrandedButton type="submit" fullWidth loading={submitting}>
-          {t('registerDetails.cta')}
-        </BrandedButton>
+        {/* Consent — yellow-tint card with check tile (always opt-in per Phase 1 spec) */}
+        <div
+          className="flex items-start gap-3 rounded-xl"
+          style={{
+            padding: '14px 14px',
+            background: '#FFF8D6',
+            border: '1.5px solid #0D0D0D',
+          }}
+        >
+          <span
+            aria-hidden="true"
+            className="inline-flex shrink-0 items-center justify-center font-display font-black"
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: 5,
+              background: '#0D0D0D',
+              color: '#FFD700',
+              fontSize: 13,
+              marginTop: 2,
+              lineHeight: 1,
+            }}
+          >
+            ✓
+          </span>
+          <div className="min-w-0 flex-1">
+            <ConsentCheckbox
+              label={t('registerDetails.consentLabel')}
+              error={
+                errors.consent_marketing
+                  ? t('registerDetails.errors.consentRequired')
+                  : undefined
+              }
+              {...register('consent_marketing')}
+            />
+          </div>
+        </div>
       </form>
-    </ScreenShell>
+    </OnboardingShell>
   );
 }

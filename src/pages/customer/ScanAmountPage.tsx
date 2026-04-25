@@ -4,8 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { BrandedButton, ScreenShell } from '@/components/common';
-import { AmountInput } from '@/components/customer';
+import { BrandedButton, OnboardingShell } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
 import { ERROR_CODES } from '@/constants/errors';
 import {
@@ -50,9 +49,6 @@ export default function ScanAmountPage(): JSX.Element {
     defaultValues: { bill_amount: undefined as unknown as number },
   });
 
-  // Guard — require both the short-lived scan token AND the QR identifier.
-  // Without the QR identifier the backend can't resolve the branch, so we send
-  // the user back to the entry point.
   if (!auth.scanToken || !stateParams.qrIdentifier) {
     return <Navigate to={ROUTES.CUSTOMER.SCAN} replace />;
   }
@@ -74,9 +70,6 @@ export default function ScanAmountPage(): JSX.Element {
         stamps: result.current_stamps,
       });
 
-      // Promote the scan into a session-less stamp success view. We pass the
-      // scan result through navigation state — the success page reads it and
-      // does not refetch.
       auth.clearScan();
       navigate(ROUTES.CUSTOMER.STAMP_SUCCESS, {
         state: { scanResult: result, scanProfile: auth.scanProfile },
@@ -99,73 +92,130 @@ export default function ScanAmountPage(): JSX.Element {
     }
   };
 
+  const errorMsg = errors.bill_amount
+    ? t('scanAmount.errors.range', {
+        min: SCAN_MIN_BILL_AMOUNT_SAR,
+        max: SCAN_MAX_BILL_AMOUNT_SAR,
+      })
+    : null;
+
   return (
-    <ScreenShell
-      eyebrow={t('scanAmount.eyebrow')}
-      title={t('scanAmount.title')}
+    <OnboardingShell
+      onBack={() => navigate(-1)}
+      stepLabel={t('scanAmount.stepLabelReturning')}
+      headlinePre={t('scanAmount.headlinePre')}
+      headlineMark={t('scanAmount.headlineMark')}
       description={t('scanAmount.description')}
+      footer={
+        <BrandedButton
+          type="submit"
+          form="scan-amount-form"
+          fullWidth
+          loading={submitting}
+        >
+          {t('scanAmount.cta')}
+        </BrandedButton>
+      }
     >
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form
+        id="scan-amount-form"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
         <Controller
           name="bill_amount"
           control={control}
-          render={({ field }) => (
-            <AmountInput
-              label={t('scanAmount.inputLabel')}
-              currencyLabel={t('scanAmount.currency')}
-              placeholder="0"
-              value={field.value ?? ''}
-              onChange={(e) => {
-                const raw = e.target.value.trim();
-                if (raw === '') {
-                  field.onChange(undefined);
-                  return;
-                }
-                const parsed = Number(raw.replace(/,/g, '.'));
-                field.onChange(Number.isFinite(parsed) ? parsed : raw);
-              }}
-              onBlur={field.onBlur}
-              error={
-                errors.bill_amount
-                  ? t('scanAmount.errors.range', {
-                      min: SCAN_MIN_BILL_AMOUNT_SAR,
-                      max: SCAN_MAX_BILL_AMOUNT_SAR,
-                    })
-                  : undefined
-              }
-            />
-          )}
+          render={({ field }) => {
+            const display =
+              typeof field.value === 'number' && Number.isFinite(field.value)
+                ? String(field.value)
+                : '';
+            return (
+              <>
+                <div
+                  className="relative flex items-baseline justify-center gap-2 overflow-hidden rounded-2xl"
+                  style={{
+                    padding: '28px 24px',
+                    background: '#FFFFFF',
+                    border: errorMsg ? '2px solid #C73B3B' : '2px solid #0D0D0D',
+                    direction: 'ltr',
+                  }}
+                >
+                  <input
+                    id="amount-input"
+                    type="text"
+                    inputMode="decimal"
+                    autoComplete="off"
+                    aria-label={t('scanAmount.inputLabel')}
+                    aria-invalid={Boolean(errorMsg)}
+                    placeholder="0"
+                    value={display}
+                    onChange={(e) => {
+                      const raw = e.target.value.trim();
+                      if (raw === '') {
+                        field.onChange(undefined);
+                        return;
+                      }
+                      const parsed = Number(raw.replace(/,/g, '.'));
+                      field.onChange(Number.isFinite(parsed) ? parsed : raw);
+                    }}
+                    onBlur={field.onBlur}
+                    className="bg-transparent text-center font-display font-black text-obsidian placeholder:text-obsidian/25 focus:outline-none"
+                    style={{
+                      fontSize: 64,
+                      letterSpacing: '-3px',
+                      lineHeight: 1,
+                      width: '60%',
+                      minWidth: 80,
+                    }}
+                  />
+                  <span
+                    className="font-sans font-bold text-obsidian/55"
+                    style={{ fontSize: 18, letterSpacing: 1 }}
+                  >
+                    {t('scanAmount.currency')}
+                  </span>
+                </div>
+
+                <div className="mt-3 flex gap-2">
+                  {QUICK_PICKS.map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() =>
+                        setValue('bill_amount', n, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                      className="flex-1 font-display font-bold text-obsidian transition-colors hover:bg-yellow"
+                      style={{
+                        height: 44,
+                        borderRadius: 999,
+                        background: '#FFFFFF',
+                        border: '1.5px solid #0D0D0D',
+                        fontSize: 14,
+                        direction: 'ltr',
+                      }}
+                    >
+                      {n} {t('scanAmount.currency')}
+                    </button>
+                  ))}
+                </div>
+
+                {errorMsg ? (
+                  <p
+                    className="mt-2 font-sans font-medium text-danger"
+                    style={{ fontSize: 13 }}
+                  >
+                    {errorMsg}
+                  </p>
+                ) : null}
+              </>
+            );
+          }}
         />
-
-        <div className="mt-4">
-          <p className="eyebrow text-obsidian/60">
-            {t('scanAmount.quickPickLabel')}
-          </p>
-          <div className="mt-2 flex gap-2">
-            {QUICK_PICKS.map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() =>
-                  setValue('bill_amount', n, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                  })
-                }
-                className="flex-1 h-11 rounded-md border-hairline border-obsidian/20 bg-white font-mono text-[14px] text-obsidian hover:border-obsidian transition-colors"
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <BrandedButton type="submit" fullWidth loading={submitting}>
-            {t('scanAmount.cta')}
-          </BrandedButton>
-        </div>
       </form>
-    </ScreenShell>
+    </OnboardingShell>
   );
 }

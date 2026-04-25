@@ -4,15 +4,22 @@
     "title": "كيان للحلويات",
     "branchLabel": "الفرع",
     "description": "اضغط متابعة لتجميع ختمك.",
-    "cta": "متابعة",
+    "cta": "تابع لتسجيل الختم ←",
+    "confirmedPill": "تم تأكيد الفرع",
+    "welcomePill": "أهلاً بعودتك",
+    "invalidPill": "الرمز غير معروف",
+    "confirmed": {
+      "title": "زيارة حلوة بانتظارك.",
+      "body": "وجدنا الفرع من الرمز. اضغط أدناه لتسجيل زيارتك."
+    },
     "invalid": {
-      "title": "رمز غير صالح",
-      "body": "رمز الاستجابة السريعة هذا لا يطابق أي فرع فعّال. الرجاء مراجعة أحد الموظفين.",
-      "cta": "تواصل مع الموظف"
+      "title": "لا نعرف هذا الفرع.",
+      "body": "هذا الرمز لا يطابق أي فرع فعّال. الرجاء مراجعة أحد الموظفين.",
+      "cta": "حاول المسح مجددًا"
     },
     "welcome": {
-      "title": "كيان للحلويات",
-      "body": "امسح رمز QR عند الكاشير لتجميع ختمك.",
+      "title": "امسح لتجمع ختمًا.",
+      "body": "امسح رمز QR عند الكاشير في زيارتك القادمة لتجمع ختمًا.",
       "viewRewards": "عرض مكافآتي"
     },
     "loading": "جاري تحديد الفرع…"
@@ -20,12 +27,16 @@
   "phone": {
     "eyebrow": "التحقق",
     "title": "أدخل رقم جوالك",
+    "stepLabel": "خطوة ١ / ٣",
+    "headlinePre": "رقم جوالك،",
+    "headlineMark": "من فضلك.",
     "subtitle": "لنبدأ بتجميع أختامك",
-    "description": "سنستخدمه للعثور على بطاقة مكافآتك.",
-    "inputLabel": "رقم الجوال السعودي",
+    "description": "سنرسل لك رمزًا من ٤ أرقام. رقمك هو بطاقة مكافآتك.",
+    "terms": "بمتابعتك، فإنك توافق على شروط الاستخدام وسياسة الخصوصية.",
+    "inputLabel": "رقم الجوال",
     "prefix": "+٩٦٦",
     "placeholder": "5XXXXXXXX",
-    "cta": "متابعة",
+    "cta": "إرسال رمز التحقق",
     "errors": {
       "format": "أدخل 9 أرقام تبدأ بـ 5."
     }
@@ -33,7 +44,13 @@
   "registerOtp": {
     "eyebrow": "التحقق",
     "title": "أدخل الرمز",
+    "stepLabel": "خطوة ٢ / ٣",
+    "headlinePre": "تحقق من",
+    "headlineMark": "رسائلك.",
     "description": "أرسلنا رمزًا من 4 أرقام إلى {{phone}}.",
+    "descriptionPre": "أُرسل إلى",
+    "didntGet": "لم يصلك؟",
+    "devCode": "الرمز هو",
     "resendIn": "إعادة الإرسال بعد {{seconds}} ث",
     "resend": "إعادة إرسال الرمز",
     "cta": "تحقق",
@@ -44,7 +61,9 @@
   "registerDetails": {
     "eyebrow": "التسجيل",
     "title": "عرّفنا على نفسك",
-    "description": "أقل من 30 ثانية.",
+    "headlinePre": "بطاقتك",
+    "headlineMark": "الحلوة.",
+    "description": "بضعة تفاصيل، ثم أنت في النادي.",
     "nameLabel": "الاسم الكامل",
     "namePlaceholder": "مثال: فاطمة الحربي",
     "birthdayLabel": "تاريخ الميلاد",
@@ -66,7 +85,11 @@
   "scanAmount": {
     "eyebrow": "زيارتك",
     "title": "أدخل قيمة الفاتورة",
-    "description": "أخبرنا بإجمالي فاتورتك لتسجيل هذه الزيارة.",
+    "stepLabelRegister": "خطوة ٣ / ٣",
+    "stepLabelReturning": "اقتربنا",
+    "headlinePre": "كم قيمة",
+    "headlineMark": "الفاتورة؟",
+    "description": "نسجلها مع ختمك لنعرف أيّ الحلويات تستحق المزيد من الرفوف.",
     "inputLabel": "قيمة الفاتورة",
     "currency": "ر.س",
     "quickPickLabel": "اختيار سريع",
@@ -79,25 +102,42 @@
   "stampSuccess": {
     "eyebrow": "تم الختم",
     "title": "+١ ختم",
+    "pillStamp": "● الختم #{{n}} مضاف",
+    "pillComplete": "✦ اكتملت البطاقة",
+    "headline": "أحسنت،\n{{name}}.",
+    "headlineFallback": "أحسنت.",
+    "cardCompleteHeadline": "كلها\nلك.",
     "cardCompleteEyebrow": "اكتملت البطاقة",
     "cardCompleteTitle": "تم فتح المكافأة",
     "cardCompleteDescription": "رائع يا {{name}}! مكافأتك جاهزة للاستبدال.",
     "cardCompleteMessage": "أكملت بطاقتك — ستبدأ بطاقة جديدة في زيارتك القادمة.",
     "description": "أحسنت يا {{name}}. نراك مجددًا قريبًا.",
+    "yourCardLabel": "بطاقتك",
     "progressLabel": "بطاقتك",
     "countLabel": "{{current}} من {{max}} أختام",
-    "nextReward": "المكافأة التالية عند {{max}} أختام.",
-    "cardFull": "اكتملت البطاقة! مكافأتك جاهزة.",
-    "claimRewardCta": "استبدل مكافأتي",
+    "nextReward": "تم إضافة الختم. {{count}} زيارات أخرى والحلوى علينا.",
+    "cardFull": "أكملت البطاقة. صينية حلويات مجانية بانتظارك في المكافآت.",
+    "claimRewardCta": "استبدل مكافأتك ←",
     "viewRewards": "عرض مكافآتي",
     "done": "تم"
   },
   "lockout": {
     "eyebrow": "تم الختم مسبقًا",
     "title": "عد مجددًا غدًا",
+    "stampedBadge": "✓ تم الختم",
+    "headlinePre": "حصلت على",
+    "headlineMark": "حلوتك اليوم.",
+    "body": "نضيف ختمًا واحدًا فقط في اليوم لتبقى البطاقة عادلة للجميع.",
+    "nextLabel": "الختم التالي يفتح",
+    "nextLine": "غدًا في",
     "description": "حصلت على ختم اليوم بالفعل. الختم التالي متاح {{when}}.",
     "whenShortly": "قريبًا",
     "cta": "العودة إلى البداية"
+  },
+  "notFound": {
+    "headline": "ضِعنا.",
+    "body": "لم نجد هذه الصفحة. ربما استُبدلت بشيء أحلى.",
+    "cta": "أعدني للرئيسية"
   },
   "rewards": {
     "eyebrow": "مكافآتك",

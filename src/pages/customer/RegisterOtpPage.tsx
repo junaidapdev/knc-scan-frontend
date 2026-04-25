@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { BrandedButton, ScreenShell } from '@/components/common';
+import { BrandedButton, OnboardingShell } from '@/components/common';
 import { OtpInput } from '@/components/customer';
 import { ROUTES } from '@/constants/routes';
 import {
@@ -18,6 +18,14 @@ interface LocationState {
   branchId?: string;
   qrIdentifier?: string;
   devOtp?: string;
+}
+
+function maskPhone(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length < 4) return phone;
+  const last3 = digits.slice(-3);
+  const first2 = digits.slice(3, 5); // skip "966" prefix
+  return `+966 ${first2 || '5'}•• ••• ${last3}`;
 }
 
 export default function RegisterOtpPage(): JSX.Element {
@@ -80,23 +88,36 @@ export default function RegisterOtpPage(): JSX.Element {
   };
 
   return (
-    <ScreenShell
-      eyebrow={t('registerOtp.eyebrow')}
-      title={t('registerOtp.title')}
-      description={t('registerOtp.description', { phone })}
-    >
-      {devOtp ? (
-        <div
-          role="status"
-          className="mb-4 rounded-md border border-yellow-400 bg-yellow-50 px-3 py-2 font-sans text-[13px] text-yellow-900"
+    <OnboardingShell
+      onBack={() => navigate(-1)}
+      stepLabel={t('registerOtp.stepLabel')}
+      headlinePre={t('registerOtp.headlinePre')}
+      headlineMark={t('registerOtp.headlineMark')}
+      description={
+        <>
+          {t('registerOtp.descriptionPre')}{' '}
+          <span
+            className="font-mono font-bold text-obsidian"
+            style={{ direction: 'ltr', display: 'inline-block' }}
+          >
+            {maskPhone(phone)}
+          </span>
+        </>
+      }
+      footer={
+        <BrandedButton
+          type="submit"
+          form="otp-form"
+          fullWidth
+          loading={submitting}
+          disabled={otp.length !== OTP_LENGTH}
         >
-          <span className="font-semibold">DEV OTP:</span>{' '}
-          <span className="font-mono tracking-widest">{devOtp}</span>
-          <span className="ml-2 opacity-60">(shown because NODE_ENV=development)</span>
-        </div>
-      ) : null}
-
+          {t('registerOtp.cta')}
+        </BrandedButton>
+      }
+    >
       <form
+        id="otp-form"
         onSubmit={(e) => {
           e.preventDefault();
           if (otp.length === OTP_LENGTH) void verify(otp);
@@ -111,30 +132,77 @@ export default function RegisterOtpPage(): JSX.Element {
           error={localError ?? undefined}
         />
 
-        <div className="mt-4 flex items-center justify-between">
+        {/* DEV-OTP banner */}
+        {devOtp ? (
+          <div
+            role="status"
+            className="mt-4 flex items-center gap-2 rounded-lg"
+            style={{
+              padding: '10px 14px',
+              background: '#FFF8D6',
+              border: '1px solid #0D0D0D',
+            }}
+          >
+            <span
+              aria-hidden="true"
+              className="inline-flex items-center justify-center font-display font-black"
+              style={{
+                background: '#0D0D0D',
+                color: '#FFD700',
+                padding: '2px 6px',
+                borderRadius: 3,
+                fontSize: 9,
+                letterSpacing: 0.5,
+              }}
+            >
+              DEV
+            </span>
+            <span
+              className="font-mono font-bold text-obsidian"
+              style={{ fontSize: 12, letterSpacing: 0.5 }}
+            >
+              {t('registerOtp.devCode')}{' '}
+              <span style={{ direction: 'ltr', display: 'inline-block' }}>
+                {devOtp}
+              </span>
+            </span>
+          </div>
+        ) : null}
+
+        {/* Resend row */}
+        <div className="mt-5 flex items-center justify-center gap-2">
+          <span
+            className="font-sans font-medium text-obsidian/55"
+            style={{ fontSize: 13 }}
+          >
+            {t('registerOtp.didntGet')}
+          </span>
           <button
             type="button"
             onClick={() => void handleResend()}
             disabled={cooldown > 0 || resending}
-            className="font-sans text-[13px] font-semibold text-obsidian underline-offset-2 hover:underline disabled:text-obsidian/40 disabled:no-underline"
+            className="font-sans font-bold text-obsidian transition-colors disabled:text-obsidian/40 disabled:no-underline"
+            style={{
+              fontSize: 13,
+              borderBottom:
+                cooldown > 0 || resending ? 'none' : '1.5px solid #0D0D0D',
+              padding: 0,
+              background: 'transparent',
+            }}
           >
-            {cooldown > 0
-              ? t('registerOtp.resendIn', { seconds: cooldown })
-              : t('registerOtp.resend')}
+            {cooldown > 0 ? (
+              <span
+                className="font-mono"
+                style={{ direction: 'ltr', display: 'inline-block' }}
+              >
+                {`0:${String(cooldown).padStart(2, '0')}`}
+              </span>
+            ) : (
+              t('registerOtp.resend')
+            )}
           </button>
         </div>
-
-        <div className="mt-6">
-          <BrandedButton
-            type="submit"
-            fullWidth
-            loading={submitting}
-            disabled={otp.length !== OTP_LENGTH}
-          >
-            {t('registerOtp.cta')}
-          </BrandedButton>
-        </div>
       </form>
-    </ScreenShell>
+    </OnboardingShell>
   );
 }
