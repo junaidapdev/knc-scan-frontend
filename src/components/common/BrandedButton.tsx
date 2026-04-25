@@ -19,18 +19,26 @@ export interface BrandedButtonProps
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary:
-    'bg-yellow text-obsidian border-yellow hover:bg-yellow-hover disabled:bg-canvas-bg disabled:text-obsidian/40 disabled:border-canvas-bg',
+    'bg-yellow text-obsidian border-yellow hover:bg-yellow-hover disabled:bg-canvas-bg disabled:text-obsidian/40 disabled:border-canvas-bg disabled:shadow-none',
   secondary:
-    'bg-transparent text-obsidian border-obsidian hover:bg-obsidian hover:text-yellow disabled:opacity-50',
+    'bg-transparent text-obsidian border-[1.5px] border-obsidian hover:bg-obsidian hover:text-yellow disabled:opacity-50',
   ghost:
     'bg-yellow-tint text-[#9C8200] border-transparent hover:bg-yellow disabled:opacity-50',
   danger:
     'bg-danger/10 text-danger border-danger hover:bg-danger hover:text-white disabled:opacity-50',
 };
 
+/** Box-shadow applied only to the primary variant (echoes the yellow glow). */
+const VARIANT_SHADOW: Record<ButtonVariant, string | undefined> = {
+  primary: '0 6px 16px rgba(255, 215, 0, 0.4)',
+  secondary: undefined,
+  ghost: undefined,
+  danger: undefined,
+};
+
 const SIZE_CLASSES: Record<ButtonSize, string> = {
-  md: 'h-11 px-4 text-[14px]',
-  lg: 'h-14 px-6 text-[16px]',
+  md: 'h-11 px-5 text-[14px]',
+  lg: 'h-14 px-7 text-[16px]',
 };
 
 const BrandedButton = forwardRef<HTMLButtonElement, BrandedButtonProps>(
@@ -52,8 +60,8 @@ const BrandedButton = forwardRef<HTMLButtonElement, BrandedButtonProps>(
     const reduceMotion = useReducedMotion();
 
     const classes = [
-      'inline-flex items-center justify-center gap-2 rounded-md',
-      'font-sans font-semibold tracking-wide',
+      'inline-flex items-center justify-center gap-2 rounded-full',
+      'font-sans font-bold tracking-wide',
       'border-[1.5px] transition-colors duration-150 select-none',
       'focus:outline-none focus-visible:shadow-focus-yellow',
       fullWidth ? 'w-full' : '',
@@ -64,6 +72,7 @@ const BrandedButton = forwardRef<HTMLButtonElement, BrandedButtonProps>(
       .filter(Boolean)
       .join(' ');
 
+    const boxShadow = VARIANT_SHADOW[variant];
     const whileTap = reduceMotion ? undefined : { scale: 0.97 };
     // Cast rest to a motion-compatible props bag — framer-motion narrows some
     // DOM event types (e.g. onAnimationStart) which are incompatible with the
@@ -75,6 +84,7 @@ const BrandedButton = forwardRef<HTMLButtonElement, BrandedButtonProps>(
         ref={ref}
         type={type}
         className={classes}
+        style={boxShadow ? { boxShadow } : undefined}
         disabled={disabled || loading}
         aria-busy={loading || undefined}
         whileTap={whileTap}

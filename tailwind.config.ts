@@ -38,17 +38,31 @@ const config: Config = {
         info: '#2980B9',
       },
       fontFamily: {
-        display: ['"Bebas Neue"', 'Impact', 'sans-serif'],
+        // v2 system — bold editorial. Plus Jakarta is now the default body
+        // AND display font (use weight to differentiate). Old Bebas Neue is
+        // kept available as `font-bebas` for any legacy screen still using it.
+        display: [
+          '"Plus Jakarta Sans"',
+          'system-ui',
+          '-apple-system',
+          'sans-serif',
+        ],
         sans: [
-          '"DM Sans"',
+          '"Plus Jakarta Sans"',
           'system-ui',
           '-apple-system',
           '"Segoe UI"',
           'Roboto',
+          '"Noto Naskh Arabic"',
           '"Noto Sans Arabic"',
           'sans-serif',
         ],
-        mono: ['"Space Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        arabic: ['"Noto Naskh Arabic"', '"SF Arabic"', 'system-ui', 'sans-serif'],
+        // Legacy fallback fonts — kept loaded so we can incrementally migrate.
+        bebas: ['"Bebas Neue"', 'Impact', 'sans-serif'],
+        dm: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        spacemono: ['"Space Mono"', 'ui-monospace', 'monospace'],
       },
       fontSize: {
         eyebrow: ['10px', { lineHeight: '1.2', letterSpacing: '3px' }],

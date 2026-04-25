@@ -5,8 +5,10 @@ import { useTranslation } from 'react-i18next';
 import {
   BrandedButton,
   ErrorFallback,
+  KayanLogo,
+  LanguageToggle,
   LoadingSkeleton,
-  ScreenShell,
+  PageTransition,
 } from '@/components/common';
 import { LoyaltyCard, TabBar } from '@/components/customer';
 import { ROUTES } from '@/constants/routes';
@@ -26,7 +28,10 @@ function last4(phone: string): string {
   return digits.slice(-4).padStart(4, '•');
 }
 
-function greetingKey(): 'home.greetMorning' | 'home.greetAfternoon' | 'home.greetEvening' {
+function greetingKey():
+  | 'home.greetMorning'
+  | 'home.greetAfternoon'
+  | 'home.greetEvening' {
   const h = new Date().getHours();
   if (h < 12) return 'home.greetMorning';
   if (h < 18) return 'home.greetAfternoon';
@@ -68,60 +73,109 @@ export default function HomePage(): JSX.Element {
   const errored = profileState.status === 'error';
 
   return (
-    <>
-      <ScreenShell
-        eyebrow={t(greetingKey())}
-        title={t('home.welcome', {
-          name: firstName(customerName) || t('home.fallbackName'),
-        })}
-        description={t('home.description')}
+    <div className="flex min-h-full flex-col bg-canvas-bg animate-fade-in">
+      {/* Skip link */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:start-2 focus:top-2 focus:z-50 focus:rounded-full focus:bg-yellow focus:px-3 focus:py-2 focus:text-obsidian"
       >
-        {loading ? (
-          <LoadingSkeleton className="h-40 w-full" />
-        ) : errored ? (
-          <ErrorFallback onRetry={() => window.location.reload()} />
-        ) : (
-          <>
-            <LoyaltyCard
-              name={customerName.toUpperCase()}
-              phoneLast4={last4(customerPhone)}
-              current={stampsNow}
-              max={STAMPS_PER_CARD}
-              eyebrow={t('home.cardTitle')}
-              countLabel={t('home.cardCountLabel', {
-                current: stampsNow,
-                max: STAMPS_PER_CARD,
-              })}
-            />
-            <p className="mt-3 font-sans text-[14px] text-obsidian">
-              {progressLine}
+        Skip to content
+      </a>
+
+      {/* Header */}
+      <header className="flex items-center justify-between px-5 pt-6 pb-2">
+        <KayanLogo height={34} />
+        <LanguageToggle />
+      </header>
+
+      {/* Main */}
+      <main
+        id="main"
+        className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pb-28 pt-6"
+      >
+        <PageTransition>
+          {/* Greeting */}
+          <div className="mb-6">
+            <p className="font-sans text-[11px] uppercase tracking-[3px] text-obsidian/50">
+              {t(greetingKey())}
             </p>
+            <h1
+              className="mt-1.5 font-display font-black leading-tight text-obsidian"
+              style={{ fontSize: 28 }}
+            >
+              {t('home.welcome', {
+                name: firstName(customerName) || t('home.fallbackName'),
+              })}
+            </h1>
+          </div>
 
-            <div className="mt-6">
-              {hasPending ? (
-                <BrandedButton
-                  fullWidth
-                  onClick={() => navigate(ROUTES.CUSTOMER.REWARDS)}
-                >
-                  {t('home.viewRewardsCta')}
-                </BrandedButton>
-              ) : (
-                <div className="rounded-xl border-hairline border-obsidian/10 bg-white p-4">
-                  <p className="font-display text-[16px] tracking-[1.5px] text-obsidian">
-                    {t('home.scanAtCounterTitle')}
-                  </p>
-                  <p className="mt-1 font-sans text-[13px] text-obsidian/60">
-                    {t('home.scanAtCounterBody')}
-                  </p>
+          {/* Card + progress */}
+          {loading ? (
+            <LoadingSkeleton className="h-52 w-full rounded-2xl" />
+          ) : errored ? (
+            <ErrorFallback onRetry={() => window.location.reload()} />
+          ) : (
+            <>
+              <LoyaltyCard
+                name={customerName.toUpperCase()}
+                phoneLast4={last4(customerPhone)}
+                current={stampsNow}
+                max={STAMPS_PER_CARD}
+                eyebrow={t('home.cardTitle')}
+                countLabel={t('home.cardCountLabel', {
+                  current: stampsNow,
+                  max: STAMPS_PER_CARD,
+                })}
+              />
+
+              {/* Progress line */}
+              <div className="mt-4 flex items-center gap-3">
+                {/* Thin progress bar */}
+                <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-obsidian/10">
+                  <div
+                    className="h-full rounded-full bg-yellow transition-all duration-700"
+                    style={{
+                      width: `${Math.min((stampsNow / STAMPS_PER_CARD) * 100, 100)}%`,
+                    }}
+                  />
                 </div>
-              )}
-            </div>
-          </>
-        )}
+                <p className="shrink-0 font-sans text-[13px] font-medium text-obsidian/70">
+                  {progressLine}
+                </p>
+              </div>
 
-        <div className="h-24" />
-      </ScreenShell>
+              {/* CTA section */}
+              <div className="mt-6">
+                {hasPending ? (
+                  <BrandedButton
+                    fullWidth
+                    onClick={() => navigate(ROUTES.CUSTOMER.REWARDS)}
+                  >
+                    {t('home.viewRewardsCta')}
+                  </BrandedButton>
+                ) : (
+                  <div
+                    className="rounded-2xl p-4"
+                    style={{
+                      background: '#fff',
+                      border: '1.5px solid rgba(13,13,13,0.08)',
+                    }}
+                  >
+                    <p className="font-display font-bold text-[15px] text-obsidian">
+                      {t('home.scanAtCounterTitle')}
+                    </p>
+                    <p className="mt-1 font-sans text-[13px] leading-relaxed text-obsidian/55">
+                      {t('home.scanAtCounterBody')}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </PageTransition>
+      </main>
+
       <TabBar />
-    </>
+    </div>
   );
 }

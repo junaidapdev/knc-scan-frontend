@@ -33,6 +33,8 @@ export default function ProfilePage(): JSX.Element {
   const phone = auth.session?.customer.phone ?? '';
   const totalVisits =
     profileState.status === 'ready' ? profileState.profile.total_visits : null;
+  const cardsCompleted =
+    profileState.status === 'ready' ? profileState.profile.cards_completed : null;
 
   const onLogout = (): void => {
     auth.logout();
@@ -67,13 +69,25 @@ export default function ProfilePage(): JSX.Element {
           </div>
 
           {totalVisits !== null ? (
-            <div className="mt-4 border-t-hairline border-obsidian/10 pt-4">
-              <p className="eyebrow text-obsidian/60">
-                {t('profile.totalVisitsLabel')}
-              </p>
-              <p className="mt-1 font-display text-[22px] leading-none text-obsidian">
-                {totalVisits}
-              </p>
+            <div className="mt-4 grid grid-cols-2 gap-3 border-t border-obsidian/8 pt-4">
+              <div>
+                <p className="font-sans text-[10px] uppercase tracking-[2px] text-obsidian/50">
+                  {t('profile.totalVisitsLabel')}
+                </p>
+                <p className="mt-1 font-display font-black text-[24px] leading-none text-obsidian">
+                  {totalVisits}
+                </p>
+              </div>
+              {cardsCompleted !== null ? (
+                <div>
+                  <p className="font-sans text-[10px] uppercase tracking-[2px] text-obsidian/50">
+                    {t('profile.cardsCompletedLabel')}
+                  </p>
+                  <p className="mt-1 font-display font-black text-[24px] leading-none text-obsidian">
+                    {cardsCompleted}
+                  </p>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </div>

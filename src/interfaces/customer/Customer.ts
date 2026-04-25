@@ -8,6 +8,7 @@ export interface Customer {
   current_stamps: number;
   last_scan_at: string | null;
   total_visits: number;
+  cards_completed: number;
   language?: SupportedLanguage;
   next_eligible_at?: string | null;
 }

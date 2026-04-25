@@ -202,6 +202,7 @@
     "title": "MY PROFILE",
     "description": "Manage your account and preferences.",
     "totalVisitsLabel": "Total visits",
+    "cardsCompletedLabel": "Cards completed",
     "settingsSection": "Settings",
     "languageLabel": "Language",
     "languageHint": "Switch between English and Arabic.",
