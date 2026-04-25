@@ -24,8 +24,14 @@ interface ShellProps {
 function Shell({ children }: ShellProps): JSX.Element {
   return (
     <div className="flex min-h-full flex-col bg-canvas-bg animate-fade-in">
-      <header className="flex items-center justify-between px-5 pt-6 pb-2">
-        <KayanLogo height={34} />
+      <header
+        className="flex items-center justify-between px-5"
+        style={{
+          height: 60,
+          borderBottom: '1px solid rgba(13,13,13,0.06)',
+        }}
+      >
+        <KSLogoMark size={40} />
         <LanguageToggle />
       </header>
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pt-2 pb-6">

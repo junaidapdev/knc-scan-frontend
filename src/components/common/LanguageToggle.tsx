@@ -24,11 +24,13 @@ export default function LanguageToggle({
     <div
       role="group"
       aria-label={t('language.label')}
-      className={`inline-flex items-center rounded-full border-hairline border-obsidian/10 bg-obsidian p-1 ${className}`}
+      className={`inline-flex items-center rounded-full bg-obsidian p-0.5 ${className}`}
     >
       {SUPPORTED_LANGUAGES.map((lang) => {
         const active = current === lang;
-        const label =
+        // Short script-codes — universal and language-agnostic.
+        const shortLabel = lang === 'ar' ? 'ع' : 'EN';
+        const ariaLabel =
           lang === 'ar'
             ? t('language.switchToArabic')
             : t('language.switchToEnglish');
@@ -38,15 +40,24 @@ export default function LanguageToggle({
             type="button"
             onClick={() => handleChange(lang)}
             aria-pressed={active}
+            aria-label={ariaLabel}
             className={[
-              'px-3 h-7 rounded-full text-[11px] font-semibold uppercase tracking-[2px]',
-              'transition-colors duration-150',
+              'inline-flex items-center justify-center rounded-full font-bold leading-none',
+              'transition-colors duration-150 focus:outline-none focus-visible:shadow-focus-yellow',
               active
                 ? 'bg-yellow text-obsidian'
-                : 'text-white/70 hover:text-white',
+                : 'text-white/65 hover:text-white',
+              lang === 'ar' ? 'font-arabic' : 'font-sans',
             ].join(' ')}
+            style={{
+              minWidth: 28,
+              height: 28,
+              padding: '0 10px',
+              fontSize: lang === 'ar' ? 15 : 11,
+              letterSpacing: lang === 'ar' ? 0 : 1.5,
+            }}
           >
-            {label}
+            {shortLabel}
           </button>
         );
       })}

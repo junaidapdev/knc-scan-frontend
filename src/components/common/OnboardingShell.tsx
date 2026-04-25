@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import KayanLogo from './KayanLogo';
+import KSLogoMark from './KSLogoMark';
 import LanguageToggle from './LanguageToggle';
 import MarkerSwatch from './MarkerSwatch';
 import PageTransition from './PageTransition';
@@ -57,8 +57,14 @@ export default function OnboardingShell({
         Skip to content
       </a>
 
-      <header className="flex items-center justify-between px-5 pt-6 pb-2">
-        <KayanLogo height={34} />
+      <header
+        className="flex items-center justify-between px-5"
+        style={{
+          height: 60,
+          borderBottom: '1px solid rgba(13,13,13,0.06)',
+        }}
+      >
+        <KSLogoMark size={40} />
         <LanguageToggle />
       </header>
 

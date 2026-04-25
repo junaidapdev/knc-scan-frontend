@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti';
 
 import {
   BrandedButton,
-  KayanLogo,
+  KSLogoMark,
   LanguageToggle,
   PageTransition,
 } from '@/components/common';
@@ -192,8 +192,14 @@ export default function StampSuccessPage(): JSX.Element {
 
   return (
     <div className="flex min-h-full flex-col bg-canvas-bg animate-fade-in">
-      <header className="flex items-center justify-between px-5 pt-6 pb-2">
-        <KayanLogo height={34} />
+      <header
+        className="flex items-center justify-between px-5"
+        style={{
+          height: 60,
+          borderBottom: '1px solid rgba(13,13,13,0.06)',
+        }}
+      >
+        <KSLogoMark size={40} />
         <LanguageToggle />
       </header>
 

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import {
   BrandedButton,
   ErrorFallback,
-  KayanLogo,
+  KSLogoMark,
   LanguageToggle,
   LoadingSkeleton,
   PageTransition,
@@ -47,8 +47,14 @@ function Shell({ children }: ShellProps): JSX.Element {
       >
         Skip to content
       </a>
-      <header className="flex items-center justify-between px-5 pt-6 pb-2">
-        <KayanLogo height={34} />
+      <header
+        className="flex items-center justify-between px-5"
+        style={{
+          height: 60,
+          borderBottom: '1px solid rgba(13,13,13,0.06)',
+        }}
+      >
+        <KSLogoMark size={40} />
         <LanguageToggle />
       </header>
       <main
