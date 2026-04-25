@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +11,7 @@ import {
   LoadingSkeleton,
   PageTransition,
 } from '@/components/common';
+import { ScanInstructionsSheet } from '@/components/customer';
 import { ROUTES } from '@/constants/routes';
 import { ANALYTICS_EVENTS, track } from '@/lib/analytics';
 import { useBranches } from '@/hooks/useBranches';
@@ -202,6 +203,7 @@ export default function ScanLandingPage(): JSX.Element {
   const qrIdentifier = params.get(QR_QUERY_PARAM);
   const { state, reload } = useBranches();
   const auth = useCustomerAuth();
+  const [howToOpen, setHowToOpen] = useState<boolean>(false);
 
   const branch = useMemo(() => {
     if (state.status !== 'ready' || !qrIdentifier) return null;
@@ -245,15 +247,26 @@ export default function ScanLandingPage(): JSX.Element {
       <Shell>
         <HeroCard state={heroState} />
         <div className="mt-3 flex flex-col gap-2">
+          <BrandedButton
+            fullWidth
+            onClick={() => setHowToOpen(true)}
+          >
+            {t('scan.welcome.scanCta')}
+          </BrandedButton>
           {auth.session ? (
             <BrandedButton
+              variant="secondary"
               fullWidth
-              onClick={() => navigate(ROUTES.CUSTOMER.REWARDS)}
+              onClick={() => navigate(ROUTES.CUSTOMER.HOME)}
             >
-              {t('scan.welcome.viewRewards')}
+              {t('scan.welcome.viewCardCta')}
             </BrandedButton>
           ) : null}
         </div>
+        <ScanInstructionsSheet
+          open={howToOpen}
+          onClose={() => setHowToOpen(false)}
+        />
       </Shell>
     );
   }

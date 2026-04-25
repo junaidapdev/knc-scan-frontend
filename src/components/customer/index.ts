@@ -11,5 +11,6 @@ export { default as RewardCard } from './RewardCard';
 export { default as CountdownPill } from './CountdownPill';
 export { default as InstallPromptBanner } from './InstallPromptBanner';
 export { default as InstallAppRow } from './InstallAppRow';
+export { default as ScanInstructionsSheet } from './ScanInstructionsSheet';
 export { default as TabBar } from './TabBar';
 export { default as LoyaltyCard } from './LoyaltyCard';

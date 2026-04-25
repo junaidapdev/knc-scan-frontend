@@ -20,7 +20,18 @@
     "welcome": {
       "title": "Scan to earn a stamp.",
       "body": "Scan the QR at the counter on your next visit to collect a stamp.",
-      "viewRewards": "View my rewards"
+      "viewRewards": "View my rewards",
+      "scanCta": "Scan QR at counter",
+      "viewCardCta": "View my card"
+    },
+    "howTo": {
+      "eyebrow": "How it works",
+      "title": "Earn a stamp.",
+      "step1": "Open your phone's camera app.",
+      "step2": "Point it at the QR code at the Kayan counter.",
+      "step3": "Tap the link that pops up — we'll add the stamp.",
+      "help": "Stuck? Ask any Kayan team member to help you scan.",
+      "close": "Got it"
     },
     "loading": "Finding your branch…"
   },
