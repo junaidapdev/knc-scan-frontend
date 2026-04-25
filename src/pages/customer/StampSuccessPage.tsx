@@ -33,22 +33,23 @@ function last4(phone: string): string {
   return digits.slice(-4).padStart(4, '•');
 }
 
-interface MiniStampGridProps {
+interface StampGridProps {
   current: number;
   reduceMotion: boolean;
 }
-function MiniStampGrid({
-  current,
-  reduceMotion,
-}: MiniStampGridProps): JSX.Element {
+/**
+ * 5×2 stamp grid — each cell ~16% of card width so the ١٠ glyphs read
+ * clearly. Newest filled stamp is yellow, rotated, with a glow halo.
+ */
+function StampGrid({ current, reduceMotion }: StampGridProps): JSX.Element {
   const cells = Array.from({ length: STAMPS_PER_CARD }, (_, i) => i);
   const newestIdx = current > 0 ? current - 1 : -1;
 
   return (
     <div
-      className="mt-3 grid gap-1"
+      className="grid gap-2"
       style={{
-        gridTemplateColumns: 'repeat(10, 1fr)',
+        gridTemplateColumns: 'repeat(5, 1fr)',
         direction: 'ltr',
       }}
     >
@@ -69,27 +70,29 @@ function MiniStampGrid({
                 : { scale: 1, opacity: 1 }
             }
             transition={{ duration: 0.45, ease: 'easeOut' }}
-            className="aspect-square rounded flex items-center justify-center"
+            className="aspect-square rounded-md flex items-center justify-center"
             style={
               isLatest
                 ? {
                     background: '#FFD700',
-                    boxShadow: '0 0 8px rgba(255,215,0,0.65)',
+                    boxShadow: '0 0 16px rgba(255,215,0,0.7)',
                     transform: !reduceMotion ? 'rotate(-4deg)' : undefined,
                   }
                 : filled
                   ? {
-                      background: 'rgba(255,215,0,0.15)',
-                      border: '1px solid rgba(255,215,0,0.4)',
+                      background: 'rgba(255,215,0,0.18)',
+                      border: '1.5px solid rgba(255,215,0,0.45)',
                     }
-                  : { border: '1px dashed rgba(255,215,0,0.2)' }
+                  : {
+                      border: '1.5px dashed rgba(255,215,0,0.22)',
+                    }
             }
           >
             {filled ? (
               <span
                 style={{
                   fontFamily: '"Noto Naskh Arabic", system-ui, sans-serif',
-                  fontSize: 10,
+                  fontSize: 22,
                   fontWeight: 700,
                   lineHeight: 1,
                   color: isLatest ? '#0D0D0D' : '#FFD700',
@@ -97,7 +100,18 @@ function MiniStampGrid({
               >
                 ١٠
               </span>
-            ) : null}
+            ) : (
+              <span
+                className="font-mono"
+                style={{
+                  fontSize: 11,
+                  color: 'rgba(255,215,0,0.3)',
+                  fontWeight: 500,
+                }}
+              >
+                {i + 1}
+              </span>
+            )}
           </motion.div>
         );
       })}
@@ -260,17 +274,37 @@ export default function StampSuccessPage(): JSX.Element {
               {subhead}
             </p>
 
-            {/* Obsidian inset card */}
+            {/* Obsidian loyalty-card visual — dominant element on the page */}
             <div
-              className="rounded-2xl"
+              className="relative overflow-hidden rounded-2xl"
               style={{
                 marginTop: 'auto',
-                padding: 16,
+                padding: 20,
                 background: '#0D0D0D',
                 color: '#FFD700',
               }}
             >
-              <div className="flex items-baseline justify-between">
+              {/* ١٠ watermark */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute select-none"
+                style={{
+                  right: -20,
+                  top: -30,
+                  fontFamily: '"Noto Naskh Arabic", system-ui, sans-serif',
+                  fontSize: 200,
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  color: '#FFD700',
+                  opacity: 0.05,
+                  letterSpacing: -8,
+                }}
+              >
+                ١٠
+              </span>
+
+              {/* Top row */}
+              <div className="relative flex items-baseline justify-between">
                 <span
                   className="font-sans font-bold uppercase"
                   style={{ fontSize: 10, letterSpacing: 1.8 }}
@@ -279,26 +313,70 @@ export default function StampSuccessPage(): JSX.Element {
                 </span>
                 <span
                   className="font-mono opacity-70"
-                  style={{ fontSize: 11, direction: 'ltr' }}
+                  style={{ fontSize: 12, direction: 'ltr' }}
                 >
                   •••• {last4(phone)}
                 </span>
               </div>
-              <div className="mt-1 flex items-baseline gap-1.5">
+
+              {/* Big count */}
+              <div
+                className="relative mt-2 flex items-baseline gap-2"
+                style={{ direction: 'ltr' }}
+              >
                 <span
                   className="font-display font-black"
-                  style={{ fontSize: 36, letterSpacing: '-1.5px' }}
+                  style={{
+                    fontSize: 64,
+                    letterSpacing: '-3px',
+                    lineHeight: 1,
+                  }}
                 >
                   {stampsCurrent}
                 </span>
-                <span className="opacity-60" style={{ fontSize: 14 }}>
+                <span
+                  className="font-display font-bold opacity-50"
+                  style={{ fontSize: 22, letterSpacing: '-0.5px' }}
+                >
                   / {STAMPS_PER_CARD}
                 </span>
+                <div className="ms-auto self-center">
+                  <span
+                    className="font-sans font-bold uppercase opacity-60"
+                    style={{ fontSize: 10, letterSpacing: 1.5 }}
+                  >
+                    {t('stampSuccess.progressLabel')}
+                  </span>
+                </div>
               </div>
-              <MiniStampGrid
-                current={stampsCurrent}
-                reduceMotion={Boolean(reduceMotion)}
-              />
+
+              {/* Progress bar */}
+              <div
+                className="relative mt-2 h-1 overflow-hidden rounded-full"
+                style={{ background: 'rgba(255,215,0,0.15)' }}
+              >
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{ background: '#FFD700' }}
+                  initial={
+                    reduceMotion
+                      ? false
+                      : { width: `${((stampsCurrent - 1) / STAMPS_PER_CARD) * 100}%` }
+                  }
+                  animate={{
+                    width: `${(stampsCurrent / STAMPS_PER_CARD) * 100}%`,
+                  }}
+                  transition={{ duration: 0.7, ease: 'easeOut', delay: 0.3 }}
+                />
+              </div>
+
+              {/* Big 5×2 stamp grid */}
+              <div className="relative mt-4">
+                <StampGrid
+                  current={stampsCurrent}
+                  reduceMotion={Boolean(reduceMotion)}
+                />
+              </div>
             </div>
           </div>
 
