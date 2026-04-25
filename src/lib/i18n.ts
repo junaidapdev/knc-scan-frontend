@@ -37,7 +37,10 @@ void i18n
     supportedLngs: SUPPORTED_LANGUAGES as unknown as string[],
     interpolation: { escapeValue: false },
     detection: {
-      order: ['localStorage', 'navigator'],
+      // Arabic is the brand default. Only honour an explicit user choice
+      // (saved to localStorage by LanguageToggle); ignore navigator.language
+      // so a first-time visitor with an English browser still lands in AR.
+      order: ['localStorage'],
       lookupLocalStorage: LANGUAGE_STORAGE_KEY,
       caches: ['localStorage'],
     },
