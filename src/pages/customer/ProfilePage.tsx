@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import {
   BrandedButton,
+  KayanLogo,
   LanguageToggle,
-  ScreenShell,
+  PageTransition,
 } from '@/components/common';
 import { TabBar } from '@/components/customer';
 import { APP_VERSION } from '@/constants/ui';
@@ -17,7 +18,13 @@ function maskPhone(phone: string): string {
   const digits = phone.replace(/\D/g, '');
   if (digits.length < 4) return phone;
   const last4 = digits.slice(-4);
-  return `•••• •••• ${last4}`;
+  return `+966 ••• ••• ${last4}`;
+}
+
+function initial(name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed) return '•';
+  return trimmed.charAt(0).toUpperCase();
 }
 
 export default function ProfilePage(): JSX.Element {
@@ -42,90 +49,171 @@ export default function ProfilePage(): JSX.Element {
   };
 
   return (
-    <>
-      <ScreenShell
-        eyebrow={t('profile.eyebrow')}
-        title={t('profile.title')}
-        description={t('profile.description')}
-        showLanguageToggle={false}
+    <div className="flex min-h-full flex-col bg-canvas-bg animate-fade-in">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:start-2 focus:top-2 focus:z-50 focus:rounded-full focus:bg-yellow focus:px-3 focus:py-2 focus:text-obsidian"
       >
-        {/* Identity card */}
-        <div className="rounded-2xl border-hairline border-obsidian/10 bg-white p-5 shadow-[0_6px_20px_-14px_rgba(13,13,13,0.2)]">
-          <div className="flex items-center gap-4">
-            <span
-              aria-hidden="true"
-              className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-yellow text-[28px]"
-            >
-              👤
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="font-display text-[20px] leading-tight text-obsidian break-words">
-                {name || '—'}
-              </p>
-              <p className="mt-1 font-mono text-[13px] text-obsidian/60">
-                {maskPhone(phone)}
-              </p>
-            </div>
-          </div>
+        Skip to content
+      </a>
 
-          {totalVisits !== null ? (
-            <div className="mt-4 grid grid-cols-2 gap-3 border-t border-obsidian/8 pt-4">
-              <div>
-                <p className="font-sans text-[10px] uppercase tracking-[2px] text-obsidian/50">
-                  {t('profile.totalVisitsLabel')}
+      <header className="flex items-center justify-between px-5 pt-6 pb-2">
+        <KayanLogo height={34} />
+        <LanguageToggle />
+      </header>
+
+      <main
+        id="main"
+        className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pb-28 pt-4"
+      >
+        <PageTransition>
+          {/* Page heading */}
+          <h1
+            className="mb-4 font-display font-black text-obsidian"
+            style={{ fontSize: 40, lineHeight: 0.95, letterSpacing: '-1.2px' }}
+          >
+            {t('profile.headline')}
+          </h1>
+
+          {/* Yellow identity card */}
+          <div
+            className="relative overflow-hidden rounded-2xl"
+            style={{
+              background: '#FFD700',
+              color: '#0D0D0D',
+              border: '2px solid #0D0D0D',
+              padding: 18,
+            }}
+          >
+            <div className="flex items-center gap-3">
+              {/* Obsidian initial badge */}
+              <span
+                aria-hidden="true"
+                className="inline-flex shrink-0 items-center justify-center rounded-xl font-display font-black"
+                style={{
+                  width: 56,
+                  height: 56,
+                  background: '#0D0D0D',
+                  color: '#FFD700',
+                  fontSize: 24,
+                  letterSpacing: '-1px',
+                  border: '2px solid #0D0D0D',
+                }}
+              >
+                {initial(name)}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p
+                  className="font-display font-black leading-none break-words"
+                  style={{ fontSize: 22, letterSpacing: '-0.5px' }}
+                >
+                  {name || '—'}
                 </p>
-                <p className="mt-1 font-display font-black text-[24px] leading-none text-obsidian">
-                  {totalVisits}
+                <p
+                  className="mt-1.5 font-mono font-semibold opacity-70"
+                  style={{ fontSize: 12, direction: 'ltr', letterSpacing: 1 }}
+                >
+                  {maskPhone(phone)}
                 </p>
               </div>
-              {cardsCompleted !== null ? (
-                <div>
-                  <p className="font-sans text-[10px] uppercase tracking-[2px] text-obsidian/50">
-                    {t('profile.cardsCompletedLabel')}
+            </div>
+
+            {/* Stats — divider + two columns */}
+            {totalVisits !== null ? (
+              <div
+                className="mt-4 flex items-stretch pt-3"
+                style={{ borderTop: '1.5px solid #0D0D0D' }}
+              >
+                <div className="flex-1">
+                  <p
+                    className="font-display font-black leading-none"
+                    style={{ fontSize: 30, letterSpacing: '-1px' }}
+                  >
+                    {totalVisits}
                   </p>
-                  <p className="mt-1 font-display font-black text-[24px] leading-none text-obsidian">
-                    {cardsCompleted}
+                  <p
+                    className="mt-1.5 font-sans font-bold uppercase opacity-70"
+                    style={{ fontSize: 10, letterSpacing: 1.5 }}
+                  >
+                    {t('profile.totalVisitsLabel')}
                   </p>
                 </div>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-
-        {/* Settings */}
-        <section className="mt-6">
-          <p className="eyebrow text-obsidian/60">
-            {t('profile.settingsSection')}
-          </p>
-          <div className="mt-3 rounded-xl border-hairline border-obsidian/10 bg-white p-4">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="font-sans text-[14px] font-semibold text-obsidian">
-                  {t('profile.languageLabel')}
-                </p>
-                <p className="mt-1 font-sans text-[12px] text-obsidian/60">
-                  {t('profile.languageHint')}
-                </p>
+                <div
+                  aria-hidden="true"
+                  className="mx-3 self-stretch"
+                  style={{
+                    width: 1.5,
+                    background: '#0D0D0D',
+                    opacity: 0.3,
+                  }}
+                />
+                <div className="flex-1">
+                  <p
+                    className="font-display font-black leading-none"
+                    style={{ fontSize: 30, letterSpacing: '-1px' }}
+                  >
+                    {cardsCompleted ?? 0}
+                  </p>
+                  <p
+                    className="mt-1.5 font-sans font-bold uppercase opacity-70"
+                    style={{ fontSize: 10, letterSpacing: 1.5 }}
+                  >
+                    {t('profile.cardsCompletedLabel')}
+                  </p>
+                </div>
               </div>
-              <LanguageToggle />
-            </div>
+            ) : null}
           </div>
-        </section>
 
-        {/* Account */}
-        <section className="mt-6">
-          <BrandedButton variant="secondary" fullWidth onClick={onLogout}>
-            {t('profile.logoutCta')}
-          </BrandedButton>
-        </section>
+          {/* Preferences */}
+          <section className="mt-6">
+            <p
+              className="mb-2 px-1 font-sans font-bold uppercase text-obsidian/55"
+              style={{ fontSize: 11, letterSpacing: 1.5 }}
+            >
+              {t('profile.preferencesSection')}
+            </p>
+            <div
+              className="overflow-hidden rounded-2xl bg-white"
+              style={{ border: '1.5px solid #0D0D0D' }}
+            >
+              <div className="flex items-center justify-between gap-3 px-4 py-3.5">
+                <div className="min-w-0 flex-1">
+                  <p
+                    className="font-sans font-bold text-obsidian"
+                    style={{ fontSize: 15 }}
+                  >
+                    {t('profile.languageLabel')}
+                  </p>
+                  <p
+                    className="mt-0.5 font-sans font-medium text-obsidian/55"
+                    style={{ fontSize: 12 }}
+                  >
+                    {t('profile.languageHint')}
+                  </p>
+                </div>
+                <LanguageToggle />
+              </div>
+            </div>
+          </section>
 
-        <p className="mt-6 text-center font-mono text-[11px] text-obsidian/40">
-          {t('profile.versionLabel', { version: APP_VERSION })}
-        </p>
+          {/* Logout */}
+          <div className="mt-6">
+            <BrandedButton variant="secondary" fullWidth onClick={onLogout}>
+              {t('profile.logoutCta')}
+            </BrandedButton>
+          </div>
 
-        <div className="h-24" />
-      </ScreenShell>
+          <p
+            className="mt-6 text-center font-mono font-semibold text-obsidian/40"
+            style={{ fontSize: 11 }}
+          >
+            {t('profile.versionLabel', { version: APP_VERSION })}
+          </p>
+        </PageTransition>
+      </main>
+
       <TabBar />
-    </>
+    </div>
   );
 }
