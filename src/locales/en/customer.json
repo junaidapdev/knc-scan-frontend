@@ -33,7 +33,10 @@
       "help": "Stuck? Ask any Kayan team member to help you scan.",
       "close": "Got it"
     },
-    "loading": "Finding your branch…"
+    "loading": "Finding your branch…",
+    "loadingPill": "Finding branch",
+    "loadingHeadline": "One moment",
+    "loadingBody": "We're matching the QR to a Kayan branch. Almost there."
   },
   "phone": {
     "eyebrow": "Verify",

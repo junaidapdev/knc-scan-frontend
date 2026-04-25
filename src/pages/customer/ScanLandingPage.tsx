@@ -8,9 +8,9 @@ import {
   KayanLogo,
   KSLogoMark,
   LanguageToggle,
-  LoadingSkeleton,
   PageTransition,
 } from '@/components/common';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ScanInstructionsSheet } from '@/components/customer';
 import { ROUTES } from '@/constants/routes';
 import { ANALYTICS_EVENTS, track } from '@/lib/analytics';
@@ -196,6 +196,129 @@ function HeroCard({
   );
 }
 
+/**
+ * Branded loading hero — mirrors HeroCard's layout so the transition into
+ * the loaded state feels seamless. Shows a pulsing yellow dot in the pill,
+ * a breathing Kayan logo, and animated trailing dots after the headline.
+ */
+function HeroCardLoading(): JSX.Element {
+  const { t } = useTranslation('customer');
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <div
+      className="relative flex flex-1 flex-col overflow-hidden rounded-3xl"
+      style={{
+        padding: 24,
+        background: '#FFD700',
+        color: '#0D0D0D',
+        border: '2px solid #0D0D0D',
+        minHeight: 360,
+      }}
+    >
+      {/* Loading pill */}
+      <span
+        className="inline-flex items-center gap-2 self-start font-sans font-bold uppercase"
+        style={{
+          padding: '5px 11px',
+          borderRadius: 4,
+          background: '#0D0D0D',
+          color: '#FFD700',
+          fontSize: 10,
+          letterSpacing: 1.8,
+        }}
+      >
+        <motion.span
+          aria-hidden="true"
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: 999,
+            background: '#FFD700',
+            display: 'inline-block',
+          }}
+          animate={
+            reduceMotion ? undefined : { opacity: [0.4, 1, 0.4] }
+          }
+          transition={{
+            duration: 1.2,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+        {t('scan.loadingPill')}
+      </span>
+
+      {/* Breathing Kayan logo */}
+      <div className="flex flex-1 items-center justify-center py-6">
+        <motion.div
+          animate={
+            reduceMotion ? undefined : { scale: [1, 1.04, 1], opacity: [0.7, 1, 0.7] }
+          }
+          transition={{
+            duration: 1.6,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        >
+          <KayanLogo height={108} className="select-none" />
+        </motion.div>
+      </div>
+
+      {/* Headline + animated dots */}
+      <div>
+        <h1
+          className="flex items-baseline gap-1 font-display font-black"
+          style={{
+            fontSize: 36,
+            lineHeight: 0.95,
+            letterSpacing: '-1.2px',
+            margin: 0,
+          }}
+        >
+          {t('scan.loadingHeadline')}
+          {!reduceMotion ? (
+            <span
+              aria-hidden="true"
+              className="inline-flex gap-0.5"
+              style={{ fontSize: 36, letterSpacing: '-1.2px' }}
+            >
+              {[0, 1, 2].map((i) => (
+                <motion.span
+                  key={i}
+                  animate={{ opacity: [0.2, 1, 0.2] }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: i * 0.2,
+                  }}
+                >
+                  .
+                </motion.span>
+              ))}
+            </span>
+          ) : (
+            '...'
+          )}
+        </h1>
+        <p
+          className="font-sans font-medium"
+          style={{
+            marginTop: 12,
+            fontSize: 14,
+            lineHeight: 1.5,
+            color: 'rgba(13,13,13,0.78)',
+            maxWidth: 320,
+          }}
+        >
+          {t('scan.loadingBody')}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function ScanLandingPage(): JSX.Element {
   const { t } = useTranslation('customer');
   const [params] = useSearchParams();
@@ -219,7 +342,7 @@ export default function ScanLandingPage(): JSX.Element {
   if (state.status === 'loading') {
     return (
       <Shell>
-        <LoadingSkeleton className="h-[460px] w-full rounded-3xl" />
+        <HeroCardLoading />
       </Shell>
     );
   }
