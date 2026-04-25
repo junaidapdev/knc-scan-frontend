@@ -259,42 +259,24 @@ export default function RegisterDetailsPage(): JSX.Element {
           )}
         />
 
-        {/* Consent — yellow-tint card with check tile (always opt-in per Phase 1 spec) */}
+        {/* Consent — yellow-tint card wrapping the styled checkbox */}
         <div
-          className="flex items-start gap-3 rounded-xl"
+          className="rounded-xl"
           style={{
             padding: '14px 14px',
             background: '#FFF8D6',
             border: '1.5px solid #0D0D0D',
           }}
         >
-          <span
-            aria-hidden="true"
-            className="inline-flex shrink-0 items-center justify-center font-display font-black"
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: 5,
-              background: '#0D0D0D',
-              color: '#FFD700',
-              fontSize: 13,
-              marginTop: 2,
-              lineHeight: 1,
-            }}
-          >
-            ✓
-          </span>
-          <div className="min-w-0 flex-1">
-            <ConsentCheckbox
-              label={t('registerDetails.consentLabel')}
-              error={
-                errors.consent_marketing
-                  ? t('registerDetails.errors.consentRequired')
-                  : undefined
-              }
-              {...register('consent_marketing')}
-            />
-          </div>
+          <ConsentCheckbox
+            label={t('registerDetails.consentLabel')}
+            error={
+              errors.consent_marketing
+                ? t('registerDetails.errors.consentRequired')
+                : undefined
+            }
+            {...register('consent_marketing')}
+          />
         </div>
       </form>
     </OnboardingShell>
