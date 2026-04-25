@@ -22,8 +22,10 @@ export interface OtpInputProps
 }
 
 /**
- * Single monospace input for the 4-digit OTP. Digits-only, auto-strips
- * non-numeric characters on paste, fires onComplete when full.
+ * v2 OTP input — visually rendered as N separate digit boxes.
+ * Internally still a single <input> (positioned transparently over the row)
+ * so paste, autocomplete (one-time-code), and keyboard input all just work.
+ * The next-to-type box gets a yellow background + blinking cursor.
  */
 const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(
   function OtpInput(
@@ -64,41 +66,85 @@ const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(
       }
     };
 
+    const cells = Array.from({ length }, (_, i) => i);
+    const activeIndex = Math.min(value.length, length - 1);
+
     return (
-      <label htmlFor={inputId} className={`block ${className}`}>
-        <span className="eyebrow text-obsidian/70">{label}</span>
-        <input
-          ref={ref}
-          id={inputId}
-          type="text"
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          pattern="\d*"
-          maxLength={length}
-          value={value}
-          onChange={handleChange}
-          onPaste={handlePaste}
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? errorId : undefined}
-          className={[
-            'mt-2 block w-full h-16 rounded-md border-[1.5px] bg-white text-center',
-            'font-mono text-[28px] tracking-[0.8em] text-obsidian',
-            'focus:outline-none focus:shadow-focus-yellow',
-            error
-              ? 'border-danger'
-              : 'border-obsidian/20 focus:border-obsidian',
-          ].join(' ')}
-          {...rest}
-        />
+      <div className={`block ${className}`}>
+        {/* Visually-hidden label — kept for screen readers + tests. */}
+        <label htmlFor={inputId} className="sr-only">
+          {label}
+        </label>
+
+        <div className="relative" style={{ direction: 'ltr' }}>
+          {/* Visual boxes */}
+          <div className="flex justify-center gap-3" aria-hidden="true">
+            {cells.map((i) => {
+              const digit = value[i] ?? '';
+              const isActive = i === activeIndex && value.length < length;
+              return (
+                <div
+                  key={i}
+                  className="relative flex items-center justify-center font-display font-extrabold text-obsidian"
+                  style={{
+                    flex: 1,
+                    maxWidth: 68,
+                    height: 76,
+                    borderRadius: 12,
+                    background: isActive ? '#FFD700' : '#FFFFFF',
+                    border: error
+                      ? '2px solid #C73B3B'
+                      : '2px solid #0D0D0D',
+                    fontSize: 32,
+                  }}
+                >
+                  {digit}
+                  {isActive && !digit ? (
+                    <span
+                      aria-hidden="true"
+                      className="absolute animate-pulse"
+                      style={{
+                        width: 2.5,
+                        height: 30,
+                        background: '#0D0D0D',
+                      }}
+                    />
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Transparent input layered over the row — receives all input. */}
+          <input
+            ref={ref}
+            id={inputId}
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            pattern="\d*"
+            maxLength={length}
+            value={value}
+            onChange={handleChange}
+            onPaste={handlePaste}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? errorId : undefined}
+            className="absolute inset-0 h-full w-full bg-transparent text-transparent caret-transparent focus:outline-none"
+            style={{ fontSize: 32 }}
+            {...rest}
+          />
+        </div>
+
         {error ? (
-          <span
+          <p
             id={errorId}
-            className="mt-2 block font-sans text-[13px] text-danger"
+            className="mt-3 text-center font-sans font-medium text-danger"
+            style={{ fontSize: 13 }}
           >
             {error}
-          </span>
+          </p>
         ) : null}
-      </label>
+      </div>
     );
   },
 );

@@ -44,16 +44,16 @@ export default function RewardDonePage(): JSX.Element {
       </header>
 
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pb-8 pt-2">
-        <PageTransition>
+        <PageTransition className="flex flex-1 flex-col">
           {/* Yellow hero — fills available space */}
           <div
-            className="relative flex flex-col justify-between overflow-hidden rounded-3xl"
+            className="relative flex flex-1 flex-col justify-between overflow-hidden rounded-3xl"
             style={{
               padding: 28,
               background: '#FFD700',
               color: '#0D0D0D',
               border: '2px solid #0D0D0D',
-              minHeight: 460,
+              minHeight: 360,
             }}
           >
             <div>

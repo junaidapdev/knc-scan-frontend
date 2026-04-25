@@ -29,7 +29,9 @@ function Shell({ children }: ShellProps): JSX.Element {
         <LanguageToggle />
       </header>
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pt-2 pb-6">
-        <PageTransition>{children}</PageTransition>
+        <PageTransition className="flex flex-1 flex-col">
+          {children}
+        </PageTransition>
       </main>
     </div>
   );
@@ -63,7 +65,7 @@ function HeroCard({
         background: state.bg,
         color: state.fg,
         border: '2px solid #0D0D0D',
-        minHeight: 460,
+        minHeight: 360,
       }}
     >
       {/* ١٠ watermark */}

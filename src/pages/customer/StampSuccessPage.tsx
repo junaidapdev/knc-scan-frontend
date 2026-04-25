@@ -184,7 +184,7 @@ export default function StampSuccessPage(): JSX.Element {
       </header>
 
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pt-2 pb-6">
-        <PageTransition>
+        <PageTransition className="flex flex-1 flex-col">
           {/* Yellow editorial hero card */}
           <div
             className="relative flex flex-1 flex-col overflow-hidden rounded-3xl"
@@ -193,7 +193,7 @@ export default function StampSuccessPage(): JSX.Element {
               background: '#FFD700',
               color: '#0D0D0D',
               border: '2px solid #0D0D0D',
-              minHeight: 520,
+              minHeight: 360,
             }}
           >
             {/* Status pill */}
