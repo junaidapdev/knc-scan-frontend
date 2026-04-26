@@ -9,25 +9,37 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'offline.html'],
+      includeAssets: ['offline.html'],
+      // NOTE: keep this manifest in sync with public/manifest.json — both are
+      // shipped (the static file is what <link rel="manifest"> points to in
+      // index.html; the plugin uses this copy to drive precaching).
       manifest: {
+        id: '/',
         name: 'Kayan Sweets',
         short_name: 'Kayan',
-        description: 'Kayan Sweets loyalty & rewards',
+        description:
+          'Your Kayan Sweets loyalty card. Earn a stamp on every visit, claim a free dessert at 10.',
         theme_color: '#0D0D0D',
-        background_color: '#FFFFFF',
+        background_color: '#FFD700',
         display: 'standalone',
+        orientation: 'portrait',
         start_url: '/',
+        scope: '/',
+        lang: 'ar',
+        dir: 'rtl',
+        categories: ['food', 'lifestyle', 'shopping'],
         icons: [
           {
             src: '/icons/icon-192.svg',
             sizes: '192x192',
             type: 'image/svg+xml',
+            purpose: 'any',
           },
           {
             src: '/icons/icon-512.svg',
             sizes: '512x512',
             type: 'image/svg+xml',
+            purpose: 'any',
           },
           {
             src: '/icons/icon-512-maskable.svg',
