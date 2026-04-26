@@ -32,7 +32,7 @@ function Shell({ children }: ShellProps): JSX.Element {
           borderBottom: '1px solid rgba(13,13,13,0.06)',
         }}
       >
-        <KSLogoMark size={40} />
+        <KayanLogo height={44} />
         <LanguageToggle />
       </header>
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pt-2 pb-6">

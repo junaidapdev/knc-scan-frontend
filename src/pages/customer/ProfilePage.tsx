@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import {
   BrandedButton,
-  KSLogoMark,
+  KayanLogo,
   LanguageToggle,
   PageTransition,
 } from '@/components/common';
@@ -64,7 +64,7 @@ export default function ProfilePage(): JSX.Element {
           borderBottom: '1px solid rgba(13,13,13,0.06)',
         }}
       >
-        <KSLogoMark size={40} />
+        <KayanLogo height={44} />
         <LanguageToggle />
       </header>
 

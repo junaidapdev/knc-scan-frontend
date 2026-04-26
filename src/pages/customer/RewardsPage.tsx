@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 import {
   ErrorFallback,
-  KSLogoMark,
+  KayanLogo,
   LanguageToggle,
   LoadingSkeleton,
   PageTransition,
@@ -53,7 +53,7 @@ function Shell({ children }: ShellProps): JSX.Element {
           borderBottom: '1px solid rgba(13,13,13,0.06)',
         }}
       >
-        <KSLogoMark size={40} />
+        <KayanLogo height={44} />
         <LanguageToggle />
       </header>
       <main
