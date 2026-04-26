@@ -104,10 +104,22 @@ function HeroCard({
         {state.pillText}
       </span>
 
-      {/* Brand logo — centered, the focal element */}
-      <div className="flex flex-1 items-center justify-center py-6">
+      {/* Brand logo — wrapped in a dashed "stamp window" so it has presence
+          on the big yellow card instead of floating in empty space. Echoes
+          the same dashed-perforation language used between sections. */}
+      <div className="flex flex-1 items-center justify-center py-4">
         {showFullLogo ? (
-          <KayanLogo height={108} className="select-none" />
+          <div
+            className="flex flex-col items-center gap-3"
+            style={{
+              padding: '24px 32px',
+              borderRadius: 16,
+              border: '1.5px dashed rgba(13,13,13,0.35)',
+              maxWidth: '85%',
+            }}
+          >
+            <KayanLogo height={160} className="select-none" />
+          </div>
         ) : (
           <KSLogoMark size={88} />
         )}
@@ -249,11 +261,19 @@ function HeroCardLoading(): JSX.Element {
         {t('scan.loadingPill')}
       </span>
 
-      {/* Breathing Kayan logo */}
-      <div className="flex flex-1 items-center justify-center py-6">
+      {/* Breathing Kayan logo — same dashed window as the loaded state so
+          the transition feels seamless. */}
+      <div className="flex flex-1 items-center justify-center py-4">
         <motion.div
+          className="flex flex-col items-center gap-3"
+          style={{
+            padding: '24px 32px',
+            borderRadius: 16,
+            border: '1.5px dashed rgba(13,13,13,0.35)',
+            maxWidth: '85%',
+          }}
           animate={
-            reduceMotion ? undefined : { scale: [1, 1.04, 1], opacity: [0.7, 1, 0.7] }
+            reduceMotion ? undefined : { opacity: [0.7, 1, 0.7] }
           }
           transition={{
             duration: 1.6,
@@ -261,7 +281,7 @@ function HeroCardLoading(): JSX.Element {
             ease: 'easeInOut',
           }}
         >
-          <KayanLogo height={108} className="select-none" />
+          <KayanLogo height={160} className="select-none" />
         </motion.div>
       </div>
 
