@@ -12,6 +12,7 @@ import {
 } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
 import { useApiErrorToast } from '@/hooks/useApiErrorToast';
+import { branchCity, branchName } from '@/lib/branch';
 import { useBranches } from '@/hooks/useBranches';
 import { useMyRewards } from '@/hooks/useMyRewards';
 import { claimRewardStep1 } from '@/lib/services';
@@ -71,11 +72,13 @@ interface BranchRadioProps {
   branch: Branch;
   selected: boolean;
   onSelect: (id: string) => void;
+  lang: 'en' | 'ar';
 }
 function BranchRadio({
   branch,
   selected,
   onSelect,
+  lang,
 }: BranchRadioProps): JSX.Element {
   return (
     <button
@@ -94,7 +97,7 @@ function BranchRadio({
           className="font-display font-extrabold text-obsidian"
           style={{ fontSize: 14, letterSpacing: '-0.2px' }}
         >
-          {branch.name}
+          {branchName(branch, lang)}
         </p>
         <p
           className="mt-0.5 font-sans font-medium"
@@ -103,7 +106,7 @@ function BranchRadio({
             color: selected ? '#4A4A4A' : '#8A8A87',
           }}
         >
-          {branch.city}
+          {branchCity(branch, lang)}
         </p>
       </div>
       <span
@@ -342,6 +345,7 @@ export default function RewardClaimPage(): JSX.Element {
               branch={b}
               selected={selectedBranchId === b.id}
               onSelect={setSelectedBranchId}
+              lang={lang}
             />
           ))}
         </div>

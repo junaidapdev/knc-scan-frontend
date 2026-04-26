@@ -1,6 +1,8 @@
 import { forwardRef, type SelectHTMLAttributes } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { Branch } from '@/interfaces/branch';
+import { branchCity, branchName } from '@/lib/branch';
 
 export interface BranchSelectProps
   extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'children'> {
@@ -15,6 +17,8 @@ const BranchSelect = forwardRef<HTMLSelectElement, BranchSelectProps>(
     { label, placeholder, branches, error, className = '', id, ...rest },
     ref,
   ) {
+    const { i18n } = useTranslation();
+    const lang = (i18n.language.split('-')[0] ?? 'en') as 'en' | 'ar';
     const selectId = id ?? 'branch-select';
     const errorId = `${selectId}-error`;
     return (
@@ -39,7 +43,7 @@ const BranchSelect = forwardRef<HTMLSelectElement, BranchSelectProps>(
           </option>
           {branches.map((b) => (
             <option key={b.id} value={b.id}>
-              {b.name} — {b.city}
+              {branchName(b, lang)} — {branchCity(b, lang)}
             </option>
           ))}
         </select>

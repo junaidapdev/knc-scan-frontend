@@ -14,6 +14,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ScanInstructionsSheet } from '@/components/customer';
 import { ROUTES } from '@/constants/routes';
 import { ANALYTICS_EVENTS, track } from '@/lib/analytics';
+import { branchCity, branchName } from '@/lib/branch';
 import { useBranches } from '@/hooks/useBranches';
 import { useCustomerAuth } from '@/contexts/CustomerAuthContext';
 
@@ -340,13 +341,14 @@ function HeroCardLoading(): JSX.Element {
 }
 
 export default function ScanLandingPage(): JSX.Element {
-  const { t } = useTranslation('customer');
+  const { t, i18n } = useTranslation('customer');
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const qrIdentifier = params.get(QR_QUERY_PARAM);
   const { state, reload } = useBranches();
   const auth = useCustomerAuth();
   const [howToOpen, setHowToOpen] = useState<boolean>(false);
+  const lang = (i18n.language.split('-')[0] ?? 'en') as 'en' | 'ar';
 
   const branch = useMemo(() => {
     if (state.status !== 'ready' || !qrIdentifier) return null;
@@ -462,8 +464,8 @@ export default function ScanLandingPage(): JSX.Element {
     <Shell>
       <HeroCard
         state={heroState}
-        branchName={branch.name}
-        branchCity={branch.city}
+        branchName={branchName(branch, lang)}
+        branchCity={branchCity(branch, lang)}
       />
       <div className="mt-3 flex flex-col gap-2">
         <BrandedButton fullWidth onClick={handleContinue}>
