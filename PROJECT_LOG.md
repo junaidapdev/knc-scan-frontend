@@ -709,3 +709,64 @@ Quick polish on the admin frontend after manual smoke test.
 3. **Arabic copy review** — who owns the native-speaker pass on
    `COPY-REVIEW-AR.md`, and by when? Blocks the launch-readiness
    sign-off.
+
+---
+
+### [2026-05-04] Chunk 9: PhonePage CTA copy fix + already-authenticated guard
+
+- **Built:**
+  - **Neutralised the phone-page CTA copy.** The button said "Send
+    verification code" / "إرسال رمز التحقق" for every user, which
+    was misleading for returning customers — the lookup-first branch
+    in `PhonePage.onSubmit` already routes recognised customers
+    straight to `SCAN_AMOUNT` (or `LOCKOUT`) without ever sending an
+    SMS, so the button was promising something that didn't happen.
+    Replaced the copy with `phone.cta = "Continue"` /
+    `"متابعة"` — verb-neutral, accurate for both code paths.
+  - **Aligned the description copy with the new button.**
+    `phone.description` previously read "We'll text a 4-digit code.
+    Your number is your loyalty card." Dropped the SMS-promise
+    sentence so the screen no longer asserts an SMS is on the way
+    when half the time it isn't. AR mirrors the change.
+  - **Added a session-redirect guard inside `PhonePage`.** A user
+    who already has a long-lived `session` JWT in localStorage was
+    still being shown the phone entry screen if they navigated to
+    `/phone` (or were bounced there from a stale link). Now those
+    users early-return `<Navigate to={ROUTES.CUSTOMER.HOME} replace />`
+    so they go straight to the home page without re-typing their
+    number. The check runs after `useForm` so hook order stays
+    consistent across renders.
+- **Files changed:**
+  - `src/pages/customer/PhonePage.tsx` — added `Navigate` import +
+    early-return guard after the `useForm` call.
+  - `src/locales/en/customer.json` — `phone.cta`, `phone.description`.
+  - `src/locales/ar/customer.json` — `phone.cta`, `phone.description`.
+- **Decisions:**
+  - **Inline `<Navigate>` instead of extending `RouteGuard`.** The
+    existing `RouteGuard` only supports the "require credential"
+    direction. Adding a "forbid when present" mode to it would have
+    been over-engineering for a single call-site; the inline check
+    is three lines and lives next to the form it guards.
+  - **Hook-order safety.** First draft placed the early return
+    before `useForm`, which would conditionally skip a hook on
+    session-truthy renders (Rules of Hooks violation). Moved the
+    check below all hooks so the order is identical every render.
+  - **Description trimmed, not rewritten.** Kept the second
+    sentence ("Your number is your loyalty card.") because it's true
+    for everyone and reinforces the loyalty-card framing. Dropped
+    only the SMS-promise sentence.
+  - **Did not touch `phone.eyebrow` ("Verify" / "التحقق").** It's
+    one word, mildly misleading for returning users, but rewriting
+    it bleeds into a broader copy pass that this chunk doesn't cover.
+  - **Did not touch `registerOtp.cta`.** The OTP screen's "Verify"
+    button is correct in context; only the phone-page CTA was wrong.
+- **Verification:**
+  - `npx tsc --noEmit` — clean.
+  - `npx eslint src/pages/customer/PhonePage.tsx` — clean.
+- **Open questions for the human:**
+  - Should `phone.eyebrow` ("Verify") be softened to something
+    code-path-neutral (e.g. "Loyalty" / "الولاء") in a follow-up
+    copy pass?
+- **Next:** consider a similar audit of any other screen whose copy
+  was written assuming the OTP-every-time flow that the lookup
+  endpoint now bypasses.

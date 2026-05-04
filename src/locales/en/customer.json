@@ -45,12 +45,12 @@
     "headlinePre": "Your number,",
     "headlineMark": "please.",
     "subtitle": "Let's start collecting your stamps",
-    "description": "We'll text a 4-digit code. Your number is your loyalty card.",
+    "description": "Your number is your loyalty card.",
     "terms": "By continuing you agree to our Terms and Privacy Policy.",
     "inputLabel": "Mobile number",
     "prefix": "+966",
     "placeholder": "5XXXXXXXX",
-    "cta": "Send verification code",
+    "cta": "Continue",
     "errors": {
       "format": "Enter a 9-digit Saudi mobile starting with 5."
     }

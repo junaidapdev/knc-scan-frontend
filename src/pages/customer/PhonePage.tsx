@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +39,14 @@ export default function PhonePage(): JSX.Element {
     defaultValues: { phoneTail: '' },
     mode: 'onBlur',
   });
+
+  // If a long-lived session is already in localStorage, the user has nothing
+  // to do here — bounce them to Home. Phone entry is for unauthenticated users
+  // only. The QR scan flow has its own entry path via ScanLandingPage.
+  // (Placed after all hooks so hook order stays consistent across renders.)
+  if (auth.session) {
+    return <Navigate to={ROUTES.CUSTOMER.HOME} replace />;
+  }
 
   const onSubmit = async (values: PhoneFormValues): Promise<void> => {
     const fullPhone = `${SAUDI_PHONE_PREFIX}${values.phoneTail}`;
