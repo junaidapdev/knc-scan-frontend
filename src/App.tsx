@@ -15,7 +15,6 @@ import {
   PhonePage,
   ProfilePage,
   RegisterAmountPage,
-  RegisterDetailsPage,
   RegisterOtpPage,
   RewardClaimPage,
   RewardConfirmPage,
@@ -72,14 +71,12 @@ export default function App(): JSX.Element {
         }
       />
 
-      <Route
-        path={ROUTES.CUSTOMER.REGISTER_DETAILS}
-        element={
-          <RouteGuard require="registration-token">
-            <RegisterDetailsPage />
-          </RouteGuard>
-        }
-      />
+      {/*
+        REGISTER_DETAILS route removed in Chunk 10. Bill amount is now the
+        last step of registration; name/birthday/branch/language fields were
+        retired in favour of auto-filled defaults to cut counter friction.
+        The page file is retained as dead code in case we need to revert.
+      */}
 
       <Route
         path={ROUTES.CUSTOMER.SCAN_AMOUNT}

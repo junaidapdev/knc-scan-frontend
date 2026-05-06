@@ -770,3 +770,91 @@ Quick polish on the admin frontend after manual smoke test.
 - **Next:** consider a similar audit of any other screen whose copy
   was written assuming the OTP-every-time flow that the lookup
   endpoint now bypasses.
+
+---
+
+### [2026-05-06] Chunk 10: Counter-friendly registration — single-step bill amount
+
+- **Built:**
+  - **Collapsed registration to a single post-OTP step.** Bill amount is
+    now both collected AND submitted on `RegisterAmountPage`. The old
+    `RegisterDetailsPage` (name + birthday + preferred branch + language
+    + consent checkbox — five fields) is no longer reachable. New flow:
+    `ScanLanding → Phone → OTP → Bill amount → Stamp success`.
+  - **Hidden fields auto-filled at submit time** so the backend payload
+    still satisfies its existing zod validators — no backend change, no
+    new migration:
+    - `preferred_branch_id` / `branch_scan_id` ← QR-scan branch in
+      route state (the customer is literally standing at it)
+    - `language` ← current `i18n.language` narrowed to `'ar' | 'en'`
+    - `name` ← localised "Guest" / "زبون" placeholder (backend
+      requires `min(2)` chars; null isn't an option without a backend
+      change)
+    - `birthday_month` / `birthday_day` ← `1` / `1` sentinel; backend
+      requires non-null ints. Treat as "not collected" in analytics.
+    - `consent_marketing` ← `true`, implied by tapping the CTA
+  - **Implicit consent surfaced as inline fine-print** under the submit
+    button: "By continuing, you agree to receive Kayan messages." /
+    "بمتابعتك، فإنك توافق على استلام رسائل من كيان." Replaces the
+    yellow-card consent checkbox.
+  - **CTA copy promoted** from `"Continue"` / `"متابعة"` to
+    `"Earn my stamp"` / `"احصل على ختمي"` — the bill-amount step is no
+    longer a midway pause.
+  - **`REGISTER_DETAILS` route deleted from `App.tsx`** so a direct URL
+    visit can't strand a customer on the abandoned page. The
+    `RegisterDetailsPage.tsx` file and its barrel export are retained
+    as dead code so reverting is a one-commit affair if needed.
+
+- **Files changed:**
+  - `src/pages/customer/RegisterAmountPage.tsx` — rewrite. Adds
+    `registerCustomer` submit, auto-filled defaults, consent inline
+    text, and the registration-token + branchId guard (replacing the
+    old "branchId-only" guard).
+  - `src/App.tsx` — drops the `REGISTER_DETAILS` route and the
+    `RegisterDetailsPage` import.
+  - `src/locales/en/customer.json` — `registerAmount.cta` →
+    "Earn my stamp"; new `registerAmount.consent`.
+  - `src/locales/ar/customer.json` — `registerAmount.cta` →
+    "احصل على ختمي"; new `registerAmount.consent`.
+
+- **Decisions / deviations:**
+  - **UI-only simplification, not a schema change.** The schema fields
+    (`name`, `birthday_*`, `preferred_branch_id`, `language`,
+    `consent_marketing`) are all still required at the backend. Making
+    them genuinely nullable would require a new migration the day
+    before the salary-week pilot — too risky. We default them to
+    sensible placeholders frontend-side and clean up the schema
+    post-pilot.
+  - **`name` placeholder choice.** Considered:
+    1. Phone last 4 digits (e.g. `"5556"`) — unique but weird as a
+       greeting.
+    2. Empty string — fails backend `min(2)`.
+    3. Localised `"Guest"` / `"زبون"` — readable in greetings, clear
+       in the DB that this is a synthetic value. **Picked this.**
+       Post-pilot we may want to detect this sentinel in the home-page
+       greeter and fall back to `"there"` / `"بك"` instead, but the
+       greeting reads fine as-is for the trial.
+  - **`RegisterDetailsPage.tsx` retained, not deleted.** Routing was
+    the only thing wired up to it; removing the file felt like the
+    riskier path. Dead-code now, deletable in a follow-up cleanup.
+  - **`ROUTES.CUSTOMER.REGISTER_DETAILS` constant retained** for the
+    same reason. No live caller, no harm.
+
+- **Verification:**
+  - `npx tsc --noEmit` — clean.
+  - `npx eslint src/pages/customer/RegisterAmountPage.tsx src/App.tsx`
+    — clean.
+  - `npm test` — 27/27 pass.
+  - `npm run build` — succeeds.
+
+- **Open questions / follow-ups:**
+  - Post-pilot, when we relax the backend validators to genuinely
+    accept `null` for name/birthday/preferred_branch/language, the
+    placeholder-default code in `RegisterAmountPage` should be removed
+    in the same chunk so there's a single source of truth.
+  - The `name === 'Guest' | 'زبون'` sentinel will look weird if the
+    home-page greeter ever changes — worth a comment there or a
+    helper function.
+  - Should `RegisterDetailsPage.tsx` and its barrel export be deleted
+    in a follow-up cleanup chunk once we're confident we won't
+    revert?

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
@@ -8,8 +9,12 @@ import { ROUTES } from '@/constants/routes';
 import {
   SCAN_MAX_BILL_AMOUNT_SAR,
   SCAN_MIN_BILL_AMOUNT_SAR,
+  type SupportedLanguage,
 } from '@/constants/ui';
 import { useCustomerAuth } from '@/contexts/CustomerAuthContext';
+import { useApiErrorToast } from '@/hooks/useApiErrorToast';
+import { ANALYTICS_EVENTS, track } from '@/lib/analytics';
+import { registerCustomer } from '@/lib/services';
 import {
   scanAmountSchema,
   type ScanAmountValues,
@@ -24,16 +29,29 @@ interface LocationState {
 const QUICK_PICKS = [50, 100, 200];
 
 /**
- * Bill-amount step for the registration flow. Visually identical to
- * ScanAmountPage but does NOT call the API — it carries the amount forward
- * via router state into RegisterDetailsPage.
+ * Bill-amount step for the registration flow. As of Chunk 10 this is also the
+ * LAST step — the previous "details" page (name, birthday, branch, language,
+ * consent checkbox) was removed to cut counter-side friction.
+ *
+ * Hidden fields are auto-filled from context at submit time:
+ *   - preferred_branch_id, branch_scan_id : the QR-scan branch the customer
+ *     is standing at (already in route state)
+ *   - language                            : current i18n locale
+ *   - name                                : a localised "Guest" placeholder
+ *     (backend zod validator requires min(2) chars)
+ *   - birthday_month / birthday_day       : 1 / 1 sentinel — backend zod
+ *     requires non-null ints; treat in analytics as "not collected"
+ *   - consent_marketing                   : true, implied by tapping the CTA;
+ *     we surface that promise as fine-print under the button
  */
 export default function RegisterAmountPage(): JSX.Element {
-  const { t } = useTranslation('customer');
+  const { t, i18n } = useTranslation('customer');
   const navigate = useNavigate();
   const location = useLocation();
   const stateParams = (location.state ?? {}) as LocationState;
   const auth = useCustomerAuth();
+  const toastError = useApiErrorToast();
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const {
     control,
@@ -46,17 +64,63 @@ export default function RegisterAmountPage(): JSX.Element {
     defaultValues: { bill_amount: undefined as unknown as number },
   });
 
-  if (!auth.registrationToken || !stateParams.branchId) {
+  if (
+    !auth.registrationToken ||
+    !auth.registrationPhone ||
+    !stateParams.branchId
+  ) {
     return <Navigate to={ROUTES.CUSTOMER.PHONE} replace />;
   }
 
-  const onSubmit = (values: ScanAmountValues): void => {
-    navigate(ROUTES.CUSTOMER.REGISTER_DETAILS, {
-      state: {
-        ...stateParams,
-        bill_amount: values.bill_amount,
-      },
-    });
+  // Narrow the runtime locale to the supported set; default to 'en' on anything
+  // we don't recognise so the backend zod enum doesn't reject the payload.
+  const langPart = i18n.language.split('-')[0];
+  const language: SupportedLanguage = langPart === 'ar' ? 'ar' : 'en';
+  const guestName = language === 'ar' ? 'زبون' : 'Guest';
+
+  const onSubmit = async (values: ScanAmountValues): Promise<void> => {
+    setSubmitting(true);
+    try {
+      const res = await registerCustomer(
+        {
+          phone: auth.registrationPhone as string,
+          name: guestName,
+          birthday_month: 1,
+          birthday_day: 1,
+          preferred_branch_id: stateParams.branchId as string,
+          language,
+          consent_marketing: true,
+          branch_scan_id: stateParams.branchId as string,
+          bill_amount: values.bill_amount,
+        },
+        auth.registrationToken as string,
+      );
+
+      auth.setSession({
+        token: res.session.token,
+        customer: {
+          id: res.customer.id,
+          name: res.customer.name,
+          phone: res.customer.phone,
+        },
+      });
+      auth.clearRegistration();
+      track(ANALYTICS_EVENTS.REGISTRATION_COMPLETED, {
+        customerId: res.customer.id,
+      });
+      navigate(ROUTES.CUSTOMER.STAMP_SUCCESS, {
+        state: {
+          firstStamp: {
+            current: res.stamp.current,
+            name: res.customer.name,
+          },
+        },
+      });
+    } catch (err) {
+      toastError(err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const errorMsg = errors.bill_amount
@@ -74,9 +138,22 @@ export default function RegisterAmountPage(): JSX.Element {
       headlineMark={t('scanAmount.headlineMark')}
       description={t('scanAmount.description')}
       footer={
-        <BrandedButton type="submit" form="amount-form" fullWidth>
-          {t('registerAmount.cta')}
-        </BrandedButton>
+        <>
+          <BrandedButton
+            type="submit"
+            form="amount-form"
+            fullWidth
+            loading={submitting}
+          >
+            {t('registerAmount.cta')}
+          </BrandedButton>
+          <p
+            className="mt-3 text-center font-sans font-medium text-obsidian/55"
+            style={{ fontSize: 12, lineHeight: 1.5 }}
+          >
+            {t('registerAmount.consent')}
+          </p>
+        </>
       }
     >
       <form id="amount-form" onSubmit={handleSubmit(onSubmit)} noValidate>

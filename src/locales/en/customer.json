@@ -94,7 +94,8 @@
     }
   },
   "registerAmount": {
-    "cta": "Continue"
+    "cta": "Earn my stamp",
+    "consent": "By continuing, you agree to receive Kayan messages."
   },
   "scanAmount": {
     "eyebrow": "Your visit",
