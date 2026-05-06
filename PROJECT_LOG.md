@@ -858,3 +858,68 @@ Quick polish on the admin frontend after manual smoke test.
   - Should `RegisterDetailsPage.tsx` and its barrel export be deleted
     in a follow-up cleanup chunk once we're confident we won't
     revert?
+
+---
+
+### [2026-05-06] Chunk 10.1: Re-add optional name field on registration
+
+- **Built:**
+  - **Re-introduced a single optional name input** on
+    `RegisterAmountPage` after Chunk 10's all-fields-hidden pass left
+    the home page greeting every customer as "Hello, Guest". One
+    input, clearly labelled "Your name (optional)" / "اسمك (اختياري)",
+    with an example placeholder. If the customer skips it (or types
+    fewer than 2 chars), we still send the localised `"Guest"` /
+    `"زبون"` placeholder to the backend so the existing `name.min(2)`
+    validator stays happy.
+  - **New validation schema dedicated to the merged step:**
+    `registerAmountSchema` lives next to the existing
+    `scanAmountSchema` rather than extending it — the use cases
+    diverged in Chunk 10, and a separate schema makes both intents
+    explicit. Includes a small refinement so `''` and `length >= 2`
+    are accepted but a single character isn't ("M" → error rather
+    than persisted as a name).
+  - **Bilingual copy added:** `registerAmount.nameLabel`,
+    `registerAmount.namePlaceholder`, and an
+    `registerAmount.errors.nameTooShort` for the 1-char rejection.
+
+- **Files changed:**
+  - `src/lib/validation/registerAmountSchema.ts` — **NEW.** Bill
+    amount required + optional name with the empty-or-≥2 refinement.
+  - `src/pages/customer/RegisterAmountPage.tsx` — switches to
+    `registerAmountSchema` + `RegisterAmountValues`, renders a
+    `TextInput` for the name above the amount block, falls back to
+    `guestName` at submit time when the trimmed input is shorter than
+    2 chars.
+  - `src/locales/en/customer.json` + `src/locales/ar/customer.json` —
+    new keys under `registerAmount` (`nameLabel`, `namePlaceholder`,
+    `errors.nameTooShort`).
+
+- **Decisions / deviations:**
+  - **Optional, not required.** This is a counter flow under time
+    pressure; making name mandatory undoes Chunk 10's friction win.
+    Skip = guest. Type = personalised greeting on the home page.
+  - **Empty-or-≥2 instead of `.min(2).optional()`.** Zod's `.optional()`
+    only accepts `undefined`; react-hook-form sends `''` for an
+    untouched controlled input. The refinement covers both cleanly.
+  - **`autoComplete="given-name"`** on the input so iOS / Android can
+    pre-fill from the user's contacts card if they've allowed it.
+    One tap in the best case, zero behavioural change in the worst.
+  - **Did NOT touch the backend `register_customer_and_visit` RPC or
+    its zod validator.** Pre-pilot day; the placeholder fallback
+    remains the safer path. Once we have post-pilot breathing room,
+    making `name` genuinely nullable end-to-end should pair with
+    removing the `guestName` fallback in the page.
+
+- **Verification:**
+  - `npx tsc --noEmit` — clean.
+  - `npx eslint src/pages/customer/RegisterAmountPage.tsx
+    src/lib/validation/registerAmountSchema.ts` — clean.
+  - `npm test` — 27/27 pass.
+
+- **Follow-ups (carry over from Chunk 10):**
+  - When the backend gets a nullable-name migration, drop the
+    `guestName` substitution and let `name === null` pass through.
+    Update the home greeter at the same time.
+  - `RegisterDetailsPage.tsx` is still dead code — delete in a
+    cleanup chunk after pilot.

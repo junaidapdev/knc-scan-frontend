@@ -5,6 +5,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { BrandedButton, OnboardingShell } from '@/components/common';
+import { TextInput } from '@/components/customer';
 import { ROUTES } from '@/constants/routes';
 import {
   SCAN_MAX_BILL_AMOUNT_SAR,
@@ -16,9 +17,9 @@ import { useApiErrorToast } from '@/hooks/useApiErrorToast';
 import { ANALYTICS_EVENTS, track } from '@/lib/analytics';
 import { registerCustomer } from '@/lib/services';
 import {
-  scanAmountSchema,
-  type ScanAmountValues,
-} from '@/lib/validation/scanAmountSchema';
+  registerAmountSchema,
+  type RegisterAmountValues,
+} from '@/lib/validation/registerAmountSchema';
 
 interface LocationState {
   phone?: string;
@@ -33,12 +34,16 @@ const QUICK_PICKS = [50, 100, 200];
  * LAST step — the previous "details" page (name, birthday, branch, language,
  * consent checkbox) was removed to cut counter-side friction.
  *
+ * Visible inputs:
+ *   - name                                : OPTIONAL. If the customer types
+ *     2+ characters we use it; otherwise we fall back to a localised
+ *     "Guest" placeholder (backend zod requires name.min(2)).
+ *   - bill_amount                         : REQUIRED.
+ *
  * Hidden fields are auto-filled from context at submit time:
  *   - preferred_branch_id, branch_scan_id : the QR-scan branch the customer
  *     is standing at (already in route state)
  *   - language                            : current i18n locale
- *   - name                                : a localised "Guest" placeholder
- *     (backend zod validator requires min(2) chars)
  *   - birthday_month / birthday_day       : 1 / 1 sentinel — backend zod
  *     requires non-null ints; treat in analytics as "not collected"
  *   - consent_marketing                   : true, implied by tapping the CTA;
@@ -56,12 +61,16 @@ export default function RegisterAmountPage(): JSX.Element {
   const {
     control,
     handleSubmit,
+    register,
     setValue,
     formState: { errors },
-  } = useForm<ScanAmountValues>({
-    resolver: zodResolver(scanAmountSchema),
+  } = useForm<RegisterAmountValues>({
+    resolver: zodResolver(registerAmountSchema),
     mode: 'onBlur',
-    defaultValues: { bill_amount: undefined as unknown as number },
+    defaultValues: {
+      name: '',
+      bill_amount: undefined as unknown as number,
+    },
   });
 
   if (
@@ -78,13 +87,18 @@ export default function RegisterAmountPage(): JSX.Element {
   const language: SupportedLanguage = langPart === 'ar' ? 'ar' : 'en';
   const guestName = language === 'ar' ? 'زبون' : 'Guest';
 
-  const onSubmit = async (values: ScanAmountValues): Promise<void> => {
+  const onSubmit = async (values: RegisterAmountValues): Promise<void> => {
+    // Optional name: use it when present, otherwise use the localised
+    // placeholder so the backend min(2) validator still accepts the payload.
+    const trimmedName = values.name.trim();
+    const finalName = trimmedName.length >= 2 ? trimmedName : guestName;
+
     setSubmitting(true);
     try {
       const res = await registerCustomer(
         {
           phone: auth.registrationPhone as string,
-          name: guestName,
+          name: finalName,
           birthday_month: 1,
           birthday_day: 1,
           preferred_branch_id: stateParams.branchId as string,
@@ -156,7 +170,20 @@ export default function RegisterAmountPage(): JSX.Element {
         </>
       }
     >
-      <form id="amount-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form
+        id="amount-form"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+        className="space-y-4"
+      >
+        <TextInput
+          label={t('registerAmount.nameLabel')}
+          placeholder={t('registerAmount.namePlaceholder')}
+          autoComplete="given-name"
+          error={errors.name ? t('registerAmount.errors.nameTooShort') : undefined}
+          {...register('name')}
+        />
+
         <Controller
           name="bill_amount"
           control={control}

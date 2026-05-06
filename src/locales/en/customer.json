@@ -95,7 +95,12 @@
   },
   "registerAmount": {
     "cta": "Earn my stamp",
-    "consent": "By continuing, you agree to receive Kayan messages."
+    "consent": "By continuing, you agree to receive Kayan messages.",
+    "nameLabel": "Your name (optional)",
+    "namePlaceholder": "e.g. Mohammed",
+    "errors": {
+      "nameTooShort": "Please enter at least 2 characters, or leave blank."
+    }
   },
   "scanAmount": {
     "eyebrow": "Your visit",
