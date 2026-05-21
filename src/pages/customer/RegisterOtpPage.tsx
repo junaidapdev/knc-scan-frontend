@@ -61,6 +61,23 @@ export default function RegisterOtpPage(): JSX.Element {
     setLocalError(null);
     try {
       const res = await verifyOtp({ phone, otp: code });
+
+      // Existing customer logged in — verify returned a session. Persist it and
+      // go straight into the app (Home), no registration needed.
+      if (res.scope === 'session' && res.customer) {
+        auth.setSession({
+          token: res.token,
+          customer: {
+            id: res.customer.id,
+            name: res.customer.name ?? '',
+            phone: res.customer.phone,
+          },
+        });
+        navigate(ROUTES.CUSTOMER.HOME, { replace: true });
+        return;
+      }
+
+      // New customer — registration token. Continue to the bill-amount step.
       auth.setRegistration(res.token, phone);
       navigate(ROUTES.CUSTOMER.REGISTER_AMOUNT, {
         state: { branchId, qrIdentifier, phone },

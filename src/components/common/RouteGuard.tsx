@@ -10,12 +10,18 @@ export type GuardRequirement =
   | 'registration-token';
 
 export interface RouteGuardProps {
-  require: GuardRequirement;
+  /**
+   * Credential(s) that allow access. A single requirement, or an array meaning
+   * "any of these" — e.g. ['scan-token', 'session'] for the scan-amount step,
+   * which a returning customer reaches via a 5-min scan token (counter flow)
+   * OR a logged-in session (scanned the QR while signed in).
+   */
+  require: GuardRequirement | GuardRequirement[];
   children: ReactNode;
   redirectTo?: string;
 }
 
-/** Redirects to /phone (default) if the required credential is missing. */
+/** Redirects to /phone (default) if NONE of the required credentials are present. */
 export default function RouteGuard({
   require,
   children,
@@ -23,10 +29,14 @@ export default function RouteGuard({
 }: RouteGuardProps): JSX.Element {
   const auth = useCustomerAuth();
 
-  let ok = false;
-  if (require === 'session') ok = Boolean(auth.session);
-  else if (require === 'scan-token') ok = Boolean(auth.scanToken);
-  else if (require === 'registration-token') ok = Boolean(auth.registrationToken);
+  const has = (req: GuardRequirement): boolean => {
+    if (req === 'session') return Boolean(auth.session);
+    if (req === 'scan-token') return Boolean(auth.scanToken);
+    return Boolean(auth.registrationToken);
+  };
+
+  const requirements = Array.isArray(require) ? require : [require];
+  const ok = requirements.some(has);
 
   if (!ok) return <Navigate to={redirectTo} replace />;
   return <>{children}</>;

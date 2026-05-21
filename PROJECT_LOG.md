@@ -923,3 +923,153 @@ Quick polish on the admin frontend after manual smoke test.
     Update the home greeter at the same time.
   - `RegisterDetailsPage.tsx` is still dead code — delete in a
     cleanup chunk after pilot.
+
+---
+
+### [2026-05-21] Chunk 11: OTP-gate account access (drop phone-only session)
+
+- **Built:** the frontend half of the P0 auth-model fix (backend half is
+  backend Chunk 13). The lookup endpoint no longer returns a session, so:
+  - **`PhonePage`** now only does the no-OTP counter shortcut when the user
+    arrived via a branch QR scan (`branchId` in route state) AND is a
+    recognised returning customer. In that case it sets the 5-min scan token
+    and goes to the bill-amount step. **Recognition without a branch scan no
+    longer shortcuts in** — it falls through to the OTP flow so a real session
+    is issued. Removed the now-dead `auth.setSession(...)`-from-lookup block.
+  - **`RegisterOtpPage`** branches on the verify response `scope`:
+    - `'session'` (existing customer logging in) → `auth.setSession(...)` →
+      navigate Home.
+    - `'registration'` (new customer) → `auth.setRegistration(...)` →
+      bill-amount step (unchanged).
+  - Interface contracts updated to match the backend: removed `session_token`
+    / `customer_id` from `ScanLookupResult`; `OtpVerifyResponse.scope` is now
+    `'registration' | 'session'` with an optional `customer`.
+
+- **Files changed:**
+  - `src/pages/customer/PhonePage.tsx` — counter-vs-account branching;
+    removed lookup-session handling.
+  - `src/pages/customer/RegisterOtpPage.tsx` — scope branching on verify.
+  - `src/interfaces/visit/ScanLookupResult.ts` — dropped session fields.
+  - `src/interfaces/auth/OtpVerifyResponse.ts` — session scope + customer.
+
+- **Decisions:**
+  - **`branchId` presence is the counter-vs-account signal.** The QR flow
+    always carries `branchId` into `/phone`; the session-guard redirect from
+    rewards/profile/home carries none. Clean discriminator, no new state.
+  - **Land on Home after OTP login**, not the originally-intended page.
+    Preserving intent through the OTP flow is a nice-to-have, deferred.
+  - First-time registration flow is unchanged (new phone → registration
+    token → bill-amount → register).
+
+- **Verification:**
+  - `npx tsc --noEmit` — clean.
+  - `npx eslint` (changed files) — clean.
+  - `npm test` — 27/27 pass.
+  - `npm run build` — succeeds.
+  - **Deploy with backend Chunk 13** — the lookup + verify contracts changed
+    on both sides; shipping one without the other breaks the auth flow.
+
+- **Manual test checklist (do on a preview before prod):**
+  1. Returning customer scans a branch QR → enters phone → earns a stamp, no
+     OTP.
+  2. Open Rewards with no stored session → bounced to phone → OTP → lands
+     logged in.
+  3. Knowing a phone number alone (no OTP) grants no rewards/profile access.
+  4. First-time signup via QR still works end to end.
+
+---
+
+### [2026-05-21] Chunk 12: Fix returning-customer scan dead-end
+
+- **Built:** a logged-in customer who scans a branch QR can now earn a stamp.
+  Previously `ScanLandingPage` always routed "Continue" to `/phone`, and
+  (since Chunk 9) `/phone` bounces a logged-in user to `/home` — so the QR
+  scan dead-ended at Home with no stamp.
+  - **`ScanLandingPage.handleContinue`** now checks `auth.session`: logged-in →
+    go straight to the bill-amount step (`SCAN_AMOUNT`) for the scanned branch;
+    not logged in → `/phone` as before.
+  - **`RouteGuard`** now accepts an array of requirements meaning "any of".
+    The scan-amount route uses `require={['scan-token', 'session']}`.
+  - **`ScanAmountPage`** guard + submit accept a scan token OR a session;
+    `recordVisit` is called with `auth.scanToken ?? undefined` so a logged-in
+    user with no scan token uses their session.
+  - **`recordVisit`** (visitService) — `scanToken` is now optional; when
+    omitted, the api request interceptor falls back to the persisted session
+    JWT (`/visits/scan` accepts `scan` OR `session` scope).
+
+- **Files changed:**
+  - `src/pages/customer/ScanLandingPage.tsx` — session-aware Continue.
+  - `src/components/common/RouteGuard.tsx` — `require` accepts an array (any-of).
+  - `src/App.tsx` — scan-amount route → `require={['scan-token', 'session']}`.
+  - `src/pages/customer/ScanAmountPage.tsx` — guard/submit accept session;
+    token-optional `recordVisit` call.
+  - `src/lib/services/visitService.ts` — `recordVisit` `scanToken?` optional.
+
+- **Decisions:**
+  - **DID NOT bump `OTP_LENGTH` to 6.** The Chunk 6 prompt asked for it, but
+    per the human's explicit decision OTP stays at 4 digits, and the backend
+    (`business.ts`) is still 4 — bumping the frontend alone would make it demand
+    6 digits while the SMS carries 4, breaking OTP entry. Left `OTP_LENGTH = 4`
+    in `src/constants/ui.ts`.
+  - **`recordVisit` token-optional + interceptor fallback** rather than
+    threading the session token explicitly — matches the existing api-layer
+    contract (explicit `token` wins, else localStorage session).
+  - `StampSuccessPage` already falls back to `auth.session.customer.name` when
+    no scan profile is present, so the logged-in path needs no extra plumbing.
+
+- **Verification:**
+  - `npx tsc --noEmit` — clean.
+  - `npx eslint` (changed files) — clean.
+  - `npm test` — 27/27 pass.
+  - `npm run build` — succeeds.
+
+- **Manual test checklist (preview before prod):**
+  1. Logged-in customer scans QR → reaches bill-amount → earns a stamp (no
+     phone/OTP).
+  2. Not-logged-in returning customer scans QR → phone → scan token →
+     bill-amount (counter flow unchanged).
+  3. First-timer scans QR → phone → OTP → register (unchanged).
+  4. 24h lockout still shows for a logged-in user who already stamped today.
+
+---
+
+### [2026-05-22] Chunk 13: Patch production dependency CVEs
+
+- **Built:** the frontend half of backlog "Chunk 10 — Patch dependency
+  CVEs" (backend half is backend Chunk 19). `npm audit --omit=dev` went from
+  **1 high + 1 moderate → 0**:
+  - **`axios` (high, 13 advisories)** — prototype-pollution / SSRF / CRLF
+    family. Cleared by `npm audit fix` bumping axios **1.15.0 → 1.16.1**, which
+    sits inside the existing `^1.7.2` range, so `package.json` was unchanged
+    (lockfile only). No code change — `src/lib/api.ts` uses the stable axios 1.x
+    instance/interceptor API.
+  - **`ws` (moderate)** via `@supabase/realtime-js` — cleared by the same
+    `npm audit fix` bumping `@supabase/supabase-js` within `^2`
+    (ws 8.20.0 → 8.20.1).
+
+- **Files changed:**
+  - `package-lock.json` — axios 1.16.1; supabase-js/ws bump. (No `package.json`
+    change — both fixes were within existing semver ranges.)
+  - `PROJECT_LOG.md` — this entry.
+
+- **Decisions:**
+  - **`npm audit fix` only — no `--force`.** Force would have pulled
+    `vite@8` (a breaking major) for the remaining dev-only advisories.
+  - **Left the 3 remaining `moderate` advisories** (`vite` ≤6.4.1 /
+    `vite-plugin-pwa`, dev-only). They are **not production advisories**
+    (`npm audit --omit=dev` is already 0) and fixing them needs the breaking
+    `vite@8` upgrade — out of scope for a CVE patch. Tracked as a follow-up:
+    bump vite + vite-plugin-pwa together in a dedicated tooling chunk and
+    re-run the build.
+
+- **Verification:**
+  - `npm audit --omit=dev` — **0 vulnerabilities**.
+  - `npm run typecheck` — clean (axios 1.16.1 types OK).
+  - `npm run lint` — 0 errors (3 pre-existing `react-refresh` warnings,
+    unrelated).
+  - `npm test` — 27/27 pass.
+  - `npm run build` — succeeds (PWA service worker regenerated).
+
+- **Follow-ups:**
+  - Dev-only `vite`/`vite-plugin-pwa` moderates remain; clear them with a
+    `vite@8` + `vite-plugin-pwa` upgrade in a separate tooling chunk.

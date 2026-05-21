@@ -49,12 +49,15 @@ export default function ScanAmountPage(): JSX.Element {
     defaultValues: { bill_amount: undefined as unknown as number },
   });
 
-  if (!auth.scanToken || !stateParams.qrIdentifier) {
+  // A returning customer reaches this step with a 5-min scan token (counter
+  // flow) OR a logged-in session (scanned the QR while signed in). Either one
+  // authorizes /visits/scan, so accept both.
+  if ((!auth.scanToken && !auth.session) || !stateParams.qrIdentifier) {
     return <Navigate to={ROUTES.CUSTOMER.SCAN} replace />;
   }
 
   const onSubmit = async (values: ScanAmountValues): Promise<void> => {
-    if (!auth.scanToken || !stateParams.qrIdentifier) return;
+    if ((!auth.scanToken && !auth.session) || !stateParams.qrIdentifier) return;
     setSubmitting(true);
     try {
       const result: ScanResult = await recordVisit(
@@ -62,7 +65,9 @@ export default function ScanAmountPage(): JSX.Element {
           branch_qr_identifier: stateParams.qrIdentifier,
           bill_amount: values.bill_amount,
         },
-        auth.scanToken,
+        // Prefer the short-lived scan token (counter flow); omitting it lets the
+        // api layer fall back to the persisted session JWT for a logged-in user.
+        auth.scanToken ?? undefined,
       );
 
       track(ANALYTICS_EVENTS.STAMP_EARNED, {

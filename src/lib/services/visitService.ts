@@ -17,12 +17,13 @@ export async function scanLookup(
 }
 
 /**
- * Record a visit (stamp) using the short-lived scan JWT minted by
- * /visits/scan/lookup. The `scanToken` is never persisted.
+ * Record a visit (stamp). Pass the short-lived scan JWT (counter flow) when you
+ * have one; omit it for a logged-in customer, in which case the api layer falls
+ * back to the persisted session JWT. /visits/scan accepts either scope.
  */
 export async function recordVisit(
   payload: ScanPayload,
-  scanToken: string,
+  scanToken?: string,
 ): Promise<ScanResult> {
   return http.post<ScanResult>(API_ENDPOINTS.VISITS.SCAN, payload, {
     token: scanToken,
