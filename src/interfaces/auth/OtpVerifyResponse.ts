@@ -1,3 +1,5 @@
+import type { OtpVerifyCustomer } from './OtpVerifyCustomer';
+
 /**
  * Response from POST /auth/otp/verify. The verify step is login-or-signup:
  * - Existing customer → `scope: 'session'` with a long-lived session JWT and a
@@ -5,12 +7,14 @@
  * - New phone → `scope: 'registration'` with a short-lived JWT that only
  *   authorizes POST /customers/register.
  */
-export interface OtpVerifyResponse {
-  token: string;
-  scope: 'registration' | 'session';
-  customer?: {
-    id: string;
-    name: string | null;
-    phone: string;
-  };
-}
+export type OtpVerifyResponse =
+  | {
+      token: string;
+      scope: 'registration';
+      customer?: never;
+    }
+  | {
+      token: string;
+      scope: 'session';
+      customer: OtpVerifyCustomer;
+    };

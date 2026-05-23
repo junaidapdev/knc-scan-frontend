@@ -1172,3 +1172,17 @@ Quick polish on the admin frontend after manual smoke test.
   - If PR previews need full `/scan` smoke coverage, add the relevant Vercel
     preview host pattern or a controlled preview domain to backend
     `CORS_ALLOWED_ORIGINS`.
+
+---
+
+### [2026-05-23] Launch review follow-up: OTP verification contract
+
+- **Built:** addressed the valid cubic review finding on the release PR by
+  making `OtpVerifyResponse` a discriminated union: `scope: 'session'`
+  requires customer data, while `scope: 'registration'` cannot carry it.
+- **Files changed:** `src/interfaces/auth/OtpVerifyResponse.ts`,
+  `src/interfaces/auth/OtpVerifyCustomer.ts`, `src/interfaces/auth/index.ts`,
+  `src/pages/customer/RegisterOtpPage.tsx`, and `PROJECT_LOG.md`.
+- **Verification:** `npm run lint` (0 errors; same 3 existing Fast Refresh
+  warnings), `npm run typecheck`, `npm test` (29/29), and `npm run build`
+  (existing chunk-size warning only) all pass.

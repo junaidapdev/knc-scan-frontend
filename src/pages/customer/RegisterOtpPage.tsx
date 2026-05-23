@@ -64,7 +64,7 @@ export default function RegisterOtpPage(): JSX.Element {
 
       // Existing customer logged in — verify returned a session. Persist it and
       // go straight into the app (Home), no registration needed.
-      if (res.scope === 'session' && res.customer) {
+      if (res.scope === 'session') {
         auth.setSession({
           token: res.token,
           customer: {
