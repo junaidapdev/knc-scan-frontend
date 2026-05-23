@@ -1073,3 +1073,102 @@ Quick polish on the admin frontend after manual smoke test.
 - **Follow-ups:**
   - Dev-only `vite`/`vite-plugin-pwa` moderates remain; clear them with a
     `vite@8` + `vite-plugin-pwa` upgrade in a separate tooling chunk.
+
+---
+
+### [2026-05-22] Chunk 14: Stop error-detail leakage
+
+- **Built:** the frontend half of backlog "Chunk 11 - Stop error-detail
+  leakage" (backend half is backend Chunk 20).
+  - `AppErrorBoundary` now shows raw `error.message` only outside production.
+    In production it renders a generic localized fallback message instead, so
+    thrown SQL/internal text cannot be displayed to customers or admins.
+  - The production "Report issue" mailto body is also generic now; raw error
+    text is still included there in development for debugging.
+  - Moved the boundary copy into `common.json` for English and Arabic, and moved
+    the support email into `src/constants/ui.ts`.
+  - Added component tests covering dev raw-message behavior and production
+    sanitization.
+
+- **Files changed:**
+  - `src/components/common/AppErrorBoundary.tsx` - env-aware production
+    fallback, localized copy, sanitized mailto body.
+  - `src/components/common/__tests__/AppErrorBoundary.test.tsx` - new tests.
+  - `src/constants/ui.ts` - `SUPPORT_EMAIL`.
+  - `src/locales/en/common.json` and `src/locales/ar/common.json` - error
+    boundary copy.
+  - `PROJECT_LOG.md` - this entry.
+
+- **Decisions:**
+  - Customer scope keeps the existing bilingual on-screen style; admin scope
+    keeps English fallback copy via the existing `scope="admin"` behavior.
+  - Production hides raw messages everywhere in the boundary surface; development
+    keeps them visible for local debugging.
+
+- **Verification:**
+  - `npm test -- AppErrorBoundary.test.tsx` - 2/2 pass.
+  - `npm run typecheck` - clean.
+  - `npm run lint` - 0 errors; the same 3 pre-existing Fast Refresh warnings
+    remain.
+  - `npm test` - 29/29 pass.
+  - `npm run build` - succeeds; Vite still emits the existing large chunk
+    warning.
+
+- **Follow-ups:**
+  - None.
+
+---
+
+### [2026-05-22] Chunk 15: Security headers / CSP
+
+- **Built:** the frontend half of backlog "Chunk 12 - Security headers / CSP"
+  [P2].
+  - Added a global Vercel headers block for all routes with:
+    `Content-Security-Policy`, `X-Frame-Options: DENY`,
+    `X-Content-Type-Options: nosniff`,
+    `Referrer-Policy: strict-origin-when-cross-origin`, and HSTS.
+  - CSP now allows only self-hosted scripts (no inline script allowance), blocks
+    framing via `frame-ancestors 'none'`, blocks objects/frames/children, and
+    allows the required outbound surfaces: Kayan API origins
+    (`api.kayansweets.com`, `api-staging.kayansweets.com`, current Fly backend),
+    Sentry ingest, and Google Fonts.
+  - Kept inline styles allowed because the current React/Framer UI uses many
+    `style={...}` props; removing that would require a broad UI refactor.
+  - Vercel CLI linked the local project for preview deploys and added `.vercel`
+    to `.gitignore` so project link metadata stays out of git.
+
+- **Files changed:**
+  - `vercel.json` - global security headers + CSP.
+  - `.gitignore` - ignore `.vercel/` link metadata.
+  - `PROJECT_LOG.md` - this entry.
+
+- **Decisions:**
+  - Added `https://knc-scan-backend.fly.dev` after live preview verification
+    showed `VITE_API_BASE_URL` points there; the first preview correctly exposed
+    the missing API origin as a CSP violation.
+  - Included both CSP `frame-ancestors 'none'` and legacy
+    `X-Frame-Options: DENY` for frame defense-in-depth.
+  - Did not add broad wildcards for app/API hosts; the policy stays explicit.
+
+- **Verification:**
+  - `node -e "JSON.parse(...vercel.json...)"` - valid JSON.
+  - `npm run build` - succeeds locally (existing Vite large-chunk warning).
+  - `npm run lint` - 0 errors; same 3 pre-existing Fast Refresh warnings.
+  - Vercel preview deployed successfully:
+    `https://knc-scan-frontend-h6rc8n458-junaidapdev-32e394a3.vercel.app`.
+  - `vercel curl --head` on `/` and `/admin/login` confirmed live headers:
+    CSP, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`,
+    `Referrer-Policy: strict-origin-when-cross-origin`, and HSTS.
+  - Playwright/Chrome against the protected preview confirmed `/phone` and
+    `/admin/login` render, Google Fonts load with 200s, and there are no CSP
+    console violations or CSP-blocked requests.
+  - `/scan` on the protected preview still shows an error because the backend
+    CORS allowlist does not include the generated Vercel preview origin. This is
+    not caused by CSP: production-origin CORS was checked with
+    `Origin: https://scan.kayansweets.com` and the backend returns
+    `access-control-allow-origin: https://scan.kayansweets.com`.
+
+- **Follow-ups:**
+  - If PR previews need full `/scan` smoke coverage, add the relevant Vercel
+    preview host pattern or a controlled preview domain to backend
+    `CORS_ALLOWED_ORIGINS`.
