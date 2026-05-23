@@ -26,6 +26,8 @@ export const INSTALL_PROMPT_STAMP_COUNT_KEY = 'kayan.pwa.stampCount';
 export const INSTALL_PROMPT_DISMISSED_KEY = 'kayan.pwa.installDismissed';
 export const INSTALL_PROMPT_THRESHOLD = 2;
 
+export const SUPPORT_EMAIL = 'support@kayansweets.com';
+
 export const SUPPORTED_LANGUAGES = ['en', 'ar'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export const DEFAULT_LANGUAGE: SupportedLanguage = 'ar';

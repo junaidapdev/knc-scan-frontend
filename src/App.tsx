@@ -81,7 +81,7 @@ export default function App(): JSX.Element {
       <Route
         path={ROUTES.CUSTOMER.SCAN_AMOUNT}
         element={
-          <RouteGuard require="scan-token">
+          <RouteGuard require={['scan-token', 'session']}>
             <ScanAmountPage />
           </RouteGuard>
         }

@@ -1,5 +1,8 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
+import { env } from '@/config/env';
+import { SUPPORT_EMAIL } from '@/constants/ui';
+import { i18n } from '@/lib/i18n';
 import { captureException } from '@/lib/sentry';
 
 export interface AppErrorBoundaryProps {
@@ -40,25 +43,47 @@ export default class AppErrorBoundary extends Component<
     return window.location.pathname.startsWith('/admin');
   }
 
+  private isProduction(): boolean {
+    return env.MODE === 'production';
+  }
+
+  private translate(key: string): string {
+    const language = this.isAdminScope() ? 'en' : i18n.language;
+    return i18n.getFixedT(language, 'common')(`errorBoundary.${key}`);
+  }
+
+  private detailMessage(): string | null {
+    const errorMessage = this.state.error?.message;
+    if (this.isProduction()) {
+      return this.translate(
+        this.isAdminScope() ? 'adminGenericMessage' : 'customerGenericMessage',
+      );
+    }
+    return errorMessage || null;
+  }
+
   private reload = (): void => {
     window.location.reload();
   };
 
   private reportIssue = (): void => {
-    const subject = encodeURIComponent('Kayan error');
-    const body = encodeURIComponent(this.state.error?.message ?? 'Unknown');
-    window.location.href = `mailto:support@kayansweets.com?subject=${subject}&body=${body}`;
+    const subject = encodeURIComponent(this.translate('reportSubject'));
+    const body = encodeURIComponent(
+      this.isProduction()
+        ? this.translate('reportBody')
+        : this.state.error?.message ?? this.translate('unknownDevMessage'),
+    );
+    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
   };
 
   render(): ReactNode {
     if (!this.state.error) return this.props.children;
 
     const admin = this.isAdminScope();
-    const title = admin
-      ? 'Something went wrong — please refresh'
-      : "Something went wrong — please refresh / حدث خطأ — يرجى تحديث الصفحة";
-    const refreshLabel = admin ? 'Refresh' : 'Refresh / تحديث';
-    const reportLabel = admin ? 'Report issue' : 'Report issue / إبلاغ';
+    const title = this.translate(admin ? 'adminTitle' : 'customerTitle');
+    const refreshLabel = this.translate(admin ? 'adminRefresh' : 'customerRefresh');
+    const reportLabel = this.translate(admin ? 'adminReport' : 'customerReport');
+    const detailMessage = this.detailMessage();
 
     return (
       <div className="flex min-h-screen items-center justify-center bg-canvas-bg px-6">
@@ -66,9 +91,9 @@ export default class AppErrorBoundary extends Component<
           <h1 className="font-display text-[24px] tracking-[2px] text-obsidian">
             {title}
           </h1>
-          {this.state.error.message ? (
+          {detailMessage ? (
             <p className="mt-3 font-mono text-[12px] text-obsidian/60">
-              {this.state.error.message}
+              {detailMessage}
             </p>
           ) : null}
           <div className="mt-6 flex flex-col gap-2">

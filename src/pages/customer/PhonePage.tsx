@@ -54,17 +54,17 @@ export default function PhonePage(): JSX.Element {
     try {
       const lookup = await scanLookup({ phone: fullPhone });
 
-      if (lookup.exists && lookup.scan_token && lookup.profile) {
-        if (lookup.session_token && lookup.customer_id) {
-          auth.setSession({
-            token: lookup.session_token,
-            customer: {
-              id: lookup.customer_id,
-              name: lookup.profile.name ?? '',
-              phone: fullPhone,
-            },
-          });
-        }
+      // Counter flow ONLY: the user arrived via a branch QR scan (branchId in
+      // state) AND is a recognised returning customer. Record a stamp with the
+      // 5-minute scan token — no OTP, keeps the queue moving. Recognition WITHOUT
+      // a branch context must NOT shortcut into the app: the lookup no longer
+      // issues a session, so account access falls through to OTP below.
+      if (
+        stateFromScan.branchId &&
+        lookup.exists &&
+        lookup.scan_token &&
+        lookup.profile
+      ) {
         auth.setScan(lookup.scan_token, lookup.profile);
 
         const nextEligibleAt = lookup.profile.next_eligible_at;
@@ -84,6 +84,10 @@ export default function PhonePage(): JSX.Element {
         return;
       }
 
+      // Everyone else goes through OTP:
+      //  - new customer  → verify returns a registration token → register
+      //  - returning customer seeking account access (rewards/profile, no
+      //    branch scan) → verify logs them in with a session token
       const otpRes = await requestOtp({ phone: fullPhone });
       navigate(ROUTES.CUSTOMER.REGISTER_OTP, {
         state: {

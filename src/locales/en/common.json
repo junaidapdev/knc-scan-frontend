@@ -19,6 +19,19 @@
     "errorTitle": "Something went wrong",
     "unknownError": "An unexpected error occurred."
   },
+  "errorBoundary": {
+    "customerTitle": "Something went wrong - please refresh / حدث خطأ - يرجى تحديث الصفحة",
+    "adminTitle": "Something went wrong - please refresh",
+    "customerGenericMessage": "We could not load this screen safely. Please refresh and try again. / تعذر تحميل هذه الصفحة بأمان. يرجى التحديث والمحاولة مرة أخرى.",
+    "adminGenericMessage": "We could not load this admin screen safely. Please refresh and try again.",
+    "customerRefresh": "Refresh / تحديث",
+    "adminRefresh": "Refresh",
+    "customerReport": "Report issue / إبلاغ",
+    "adminReport": "Report issue",
+    "reportSubject": "Kayan error",
+    "reportBody": "A production error occurred. Please include what you were doing before the issue.",
+    "unknownDevMessage": "Unknown"
+  },
   "language": {
     "label": "Language",
     "switchToArabic": "العربية",

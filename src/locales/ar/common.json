@@ -19,6 +19,19 @@
     "errorTitle": "حدث خطأ",
     "unknownError": "حدث خطأ غير متوقع."
   },
+  "errorBoundary": {
+    "customerTitle": "حدث خطأ - يرجى تحديث الصفحة / Something went wrong - please refresh",
+    "adminTitle": "حدث خطأ - يرجى تحديث الصفحة",
+    "customerGenericMessage": "تعذر تحميل هذه الصفحة بأمان. يرجى التحديث والمحاولة مرة أخرى. / We could not load this screen safely. Please refresh and try again.",
+    "adminGenericMessage": "تعذر تحميل شاشة الإدارة بأمان. يرجى التحديث والمحاولة مرة أخرى.",
+    "customerRefresh": "تحديث / Refresh",
+    "adminRefresh": "تحديث",
+    "customerReport": "إبلاغ / Report issue",
+    "adminReport": "إبلاغ",
+    "reportSubject": "خطأ في كيان",
+    "reportBody": "حدث خطأ في الإنتاج. يرجى توضيح ما كنت تفعله قبل المشكلة.",
+    "unknownDevMessage": "غير معروف"
+  },
   "language": {
     "label": "اللغة",
     "switchToArabic": "العربية",

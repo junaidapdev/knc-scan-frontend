@@ -455,6 +455,15 @@ export default function ScanLandingPage(): JSX.Element {
   };
 
   const handleContinue = (): void => {
+    // Logged-in customer: skip phone/OTP entirely. /visits/scan accepts their
+    // session token, so go straight to the bill-amount step for this branch.
+    if (auth.session) {
+      navigate(ROUTES.CUSTOMER.SCAN_AMOUNT, {
+        state: { branchId: branch.id, qrIdentifier: branch.qr_identifier },
+      });
+      return;
+    }
+    // Not logged in: enter phone (returning → scan token; new → OTP/register).
     navigate(ROUTES.CUSTOMER.PHONE, {
       state: { branchId: branch.id, qrIdentifier: branch.qr_identifier },
     });
