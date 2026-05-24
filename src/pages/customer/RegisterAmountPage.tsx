@@ -27,8 +27,6 @@ interface LocationState {
   qrIdentifier?: string;
 }
 
-const QUICK_PICKS = [50, 100, 200];
-
 /**
  * Bill-amount step for the registration flow. As of Chunk 10 this is also the
  * LAST step — the previous "details" page (name, birthday, branch, language,
@@ -62,7 +60,6 @@ export default function RegisterAmountPage(): JSX.Element {
     control,
     handleSubmit,
     register,
-    setValue,
     formState: { errors },
   } = useForm<RegisterAmountValues>({
     resolver: zodResolver(registerAmountSchema),
@@ -254,33 +251,6 @@ export default function RegisterAmountPage(): JSX.Element {
                   >
                     {t('scanAmount.currency')}
                   </span>
-                </div>
-
-                {/* Quick picks */}
-                <div className="mt-3 flex gap-2">
-                  {QUICK_PICKS.map((n) => (
-                    <button
-                      key={n}
-                      type="button"
-                      onClick={() =>
-                        setValue('bill_amount', n, {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        })
-                      }
-                      className="flex-1 font-display font-bold text-obsidian transition-colors hover:bg-yellow"
-                      style={{
-                        height: 44,
-                        borderRadius: 999,
-                        background: '#FFFFFF',
-                        border: '1.5px solid #0D0D0D',
-                        fontSize: 14,
-                        direction: 'ltr',
-                      }}
-                    >
-                      {n} {t('scanAmount.currency')}
-                    </button>
-                  ))}
                 </div>
 
                 {errorMsg ? (

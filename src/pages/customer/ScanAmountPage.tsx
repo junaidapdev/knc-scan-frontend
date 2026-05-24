@@ -27,8 +27,6 @@ interface LocationState {
   qrIdentifier?: string;
 }
 
-const QUICK_PICKS = [50, 100, 200];
-
 export default function ScanAmountPage(): JSX.Element {
   const { t } = useTranslation('customer');
   const navigate = useNavigate();
@@ -41,7 +39,6 @@ export default function ScanAmountPage(): JSX.Element {
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<ScanAmountValues>({
     resolver: zodResolver(scanAmountSchema),
@@ -180,32 +177,6 @@ export default function ScanAmountPage(): JSX.Element {
                   >
                     {t('scanAmount.currency')}
                   </span>
-                </div>
-
-                <div className="mt-3 flex gap-2">
-                  {QUICK_PICKS.map((n) => (
-                    <button
-                      key={n}
-                      type="button"
-                      onClick={() =>
-                        setValue('bill_amount', n, {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        })
-                      }
-                      className="flex-1 font-display font-bold text-obsidian transition-colors hover:bg-yellow"
-                      style={{
-                        height: 44,
-                        borderRadius: 999,
-                        background: '#FFFFFF',
-                        border: '1.5px solid #0D0D0D',
-                        fontSize: 14,
-                        direction: 'ltr',
-                      }}
-                    >
-                      {n} {t('scanAmount.currency')}
-                    </button>
-                  ))}
                 </div>
 
                 {errorMsg ? (

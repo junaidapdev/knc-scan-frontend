@@ -1315,3 +1315,24 @@ Quick polish on the admin frontend after manual smoke test.
     in Vercel.
   - After the deploy finishes, open a recording in Clarity and confirm the
     sensitive fields render masked.
+
+---
+
+### [2026-05-23] Chunk 19: Hide bill-amount quick-pick buttons
+
+- **Built:** removed the 50 / 100 / 200 quick-pick buttons from both bill-amount
+  screens. Customers were tapping a preset instead of entering the real bill, so
+  the recorded `bill_amount` (and the self-reported spend totals derived from it)
+  were inaccurate. They now type the actual amount.
+  - Removed the duplicated `QUICK_PICKS` const + the quick-pick button block from
+    `ScanAmountPage` (returning-customer scan) and `RegisterAmountPage`
+    (first-visit registration), plus the now-unused `setValue` from each form's
+    `useForm` destructuring. The manual numeric input is unchanged.
+- **Files changed:** `src/pages/customer/ScanAmountPage.tsx`,
+  `src/pages/customer/RegisterAmountPage.tsx`, `PROJECT_LOG.md`.
+- **Decisions:** removed outright (recoverable from git history) rather than
+  commenting out, per the no-dead-code rule. If quick picks return later, prefer
+  a single shared `src/constants/ui.ts` constant over re-duplicating the array.
+- **Verification:** `npm run typecheck`, `npm run lint` (0 errors; same 3
+  pre-existing Fast Refresh warnings), `npm test` (29/29), `npm run build` all
+  pass.
