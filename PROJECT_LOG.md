@@ -1336,3 +1336,27 @@ Quick polish on the admin frontend after manual smoke test.
 - **Verification:** `npm run typecheck`, `npm run lint` (0 errors; same 3
   pre-existing Fast Refresh warnings), `npm test` (29/29), `npm run build` all
   pass.
+
+---
+
+### [2026-05-23] Chunk 20: Make registration name required
+
+- **Built:** the customer name is now **required** on first-visit registration
+  (reverses the Chunk 10 / 10.1 optional-name decision, per owner request — the
+  placeholder names hurt data quality the same way the quick-picks did).
+  - `registerAmountSchema`: `name` is now `.trim().min(2).max(60)` — dropped the
+    empty-allowed refine, so a blank or 1-char name blocks submission with a
+    validation error.
+  - `RegisterAmountPage`: removed the `guestName` (`Guest` / `زبون`) fallback;
+    the entered name is sent directly.
+  - Copy: label `Your name (optional)` → `Your name`; the error message now
+    reads as a required prompt. AR + EN.
+- **Files changed:** `src/lib/validation/registerAmountSchema.ts`,
+  `src/pages/customer/RegisterAmountPage.tsx`,
+  `src/locales/{en,ar}/customer.json`, `PROJECT_LOG.md`.
+- **Note:** the backend `register_customer_and_visit` validator already demanded
+  `name.min(2)`, so this is a frontend-only tightening — we simply stop sending
+  the placeholder. No backend change needed.
+- **Verification:** `npm run typecheck`, `npm run lint` (0 errors; same 3
+  pre-existing Fast Refresh warnings), `npm test` (29/29), `npm run build` all
+  pass.

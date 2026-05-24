@@ -6,25 +6,18 @@ import {
 } from '@/constants/ui';
 
 /**
- * Single-step registration form (Chunk 10).
+ * Single-step registration form (Chunk 10; name made required in Chunk 20).
  *
- * Bill amount is required (mirrors the backend /visits/scan validator).
- * Name is *optional* — the customer can skip it. When the field is empty
- * the page substitutes a localised "Guest" placeholder at submit time so
- * the backend zod validator (which still demands `name.min(2)`) is happy.
- *
- * The 1-char check (`val === '' || val.length >= 2`) catches the awkward
- * case of someone typing one initial and tapping submit — better to refuse
- * a single character than to ship "M" as the customer's display name.
+ * Both fields are required. Bill amount mirrors the backend /visits/scan
+ * validator; name requires at least 2 characters (the backend
+ * `register_customer_and_visit` validator also demands `name.min(2)`).
  */
 export const registerAmountSchema = z.object({
   name: z
     .string()
     .trim()
-    .max(60)
-    .refine((val) => val === '' || val.length >= 2, {
-      message: 'Name must be at least 2 characters',
-    }),
+    .min(2, { message: 'Name must be at least 2 characters' })
+    .max(60),
   bill_amount: z
     .number({ invalid_type_error: 'Enter a valid amount' })
     .min(SCAN_MIN_BILL_AMOUNT_SAR)

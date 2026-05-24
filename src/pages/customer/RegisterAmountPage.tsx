@@ -33,9 +33,7 @@ interface LocationState {
  * consent checkbox) was removed to cut counter-side friction.
  *
  * Visible inputs:
- *   - name                                : OPTIONAL. If the customer types
- *     2+ characters we use it; otherwise we fall back to a localised
- *     "Guest" placeholder (backend zod requires name.min(2)).
+ *   - name                                : REQUIRED (min 2 chars).
  *   - bill_amount                         : REQUIRED.
  *
  * Hidden fields are auto-filled from context at submit time:
@@ -82,13 +80,10 @@ export default function RegisterAmountPage(): JSX.Element {
   // we don't recognise so the backend zod enum doesn't reject the payload.
   const langPart = i18n.language.split('-')[0];
   const language: SupportedLanguage = langPart === 'ar' ? 'ar' : 'en';
-  const guestName = language === 'ar' ? 'زبون' : 'Guest';
 
   const onSubmit = async (values: RegisterAmountValues): Promise<void> => {
-    // Optional name: use it when present, otherwise use the localised
-    // placeholder so the backend min(2) validator still accepts the payload.
-    const trimmedName = values.name.trim();
-    const finalName = trimmedName.length >= 2 ? trimmedName : guestName;
+    // Name is required (schema enforces min 2 chars), so use it directly.
+    const finalName = values.name.trim();
 
     setSubmitting(true);
     try {

@@ -98,10 +98,10 @@
     "consent": "By continuing, you agree to receive Kayan messages.",
     "privacyPrefix": "Learn how we handle your data in our",
     "privacyLink": "Privacy Policy",
-    "nameLabel": "Your name (optional)",
+    "nameLabel": "Your name",
     "namePlaceholder": "e.g. Mohammed",
     "errors": {
-      "nameTooShort": "Please enter at least 2 characters, or leave blank."
+      "nameTooShort": "Please enter your name (at least 2 characters)."
     }
   },
   "scanAmount": {
