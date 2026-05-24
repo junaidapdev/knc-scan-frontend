@@ -6,6 +6,7 @@ export { default as ConsentCheckbox } from './ConsentCheckbox';
 export { default as TextInput } from './TextInput';
 export { default as LanguageRadioGroup } from './LanguageRadioGroup';
 export { default as AmountInput } from './AmountInput';
+export { default as BillAmountField } from './BillAmountField';
 export { default as StampProgressBar } from './StampProgressBar';
 export { default as RewardCard } from './RewardCard';
 export { default as CountdownPill } from './CountdownPill';

@@ -1360,3 +1360,62 @@ Quick polish on the admin frontend after manual smoke test.
 - **Verification:** `npm run typecheck`, `npm run lint` (0 errors; same 3
   pre-existing Fast Refresh warnings), `npm test` (29/29), `npm run build` all
   pass.
+
+---
+
+### [2026-05-24] Chunk 21: Fix decimal entry on the bill-amount input
+
+- **Built:** customers could not type a decimal point in the bill amount on
+  either amount screen — exactly the spend values the backend stores as
+  `numeric(10, 2)`. Root cause: both `ScanAmountPage` and `RegisterAmountPage`
+  rendered a **controlled** `<input>` whose displayed text was derived from the
+  *parsed number* (`value = String(field.value)`). Typing `12.` round-tripped
+  through `Number("12.")` → `12` → `String(12)` → `"12"`, so React re-rendered
+  the value without the dot, erasing the `.` on the same keystroke. The dot
+  could never persist; a leading `.` parsed to `NaN` and rendered as `""`.
+  - **New `BillAmountField` component** (`src/components/customer/`) holds the
+    raw typed text in local state as the display source of truth, and pushes
+    the parsed number to the form separately — so `12.`, `12.5`, `12.50`, `.5`
+    all survive mid-edit. Input is sanitised to digits + one separator + ≤2
+    fractional digits (matching `numeric(10, 2)`); comma is normalised to dot.
+  - Both pages now render `<BillAmountField />` inside their existing
+    `Controller`, removing ~55 lines of **verbatim-duplicated** inline markup
+    from each (the buggy block was copy-pasted across both screens).
+  - **Privacy fix (bundled):** the new input carries `data-clarity-mask="true"`.
+    The previous inline amount inputs omitted it, so bill amounts were being
+    recorded by Microsoft Clarity — contradicting the Chunk 16 claim that
+    amount inputs are force-masked. Now restored on both screens.
+
+- **Files changed:**
+  - `src/components/customer/BillAmountField.tsx` — **NEW.** Controlled numeric
+    field; raw-text display state + sanitiser + Clarity mask.
+  - `src/components/customer/__tests__/BillAmountField.test.tsx` — **NEW.**
+    Regression test types `12.50` and asserts the text sticks AND the form
+    receives `12.5`; plus trailing-dot, paste-clamp, and mask-attribute cases.
+  - `src/components/customer/index.ts` — barrel export.
+  - `src/pages/customer/ScanAmountPage.tsx`,
+    `src/pages/customer/RegisterAmountPage.tsx` — use `BillAmountField`; deleted
+    the inline input + `display` derivation.
+
+- **Decisions / deviations:**
+  - **Extracted a shared component** rather than patching two inline copies —
+    the block was duplicated verbatim and the fix + mask belong in one place
+    (matches the repo's no-duplication ethos; cf. Chunk 19).
+  - **Constrained to 2 decimal places** in the UI to match the DB column, so
+    customers aren't surprised by Postgres rounding `12.567` → `12.57`.
+  - **Left `AmountInput.tsx` untouched.** Discovered it is **unused** (the amount
+    screens always used inline inputs, not this component) — flagged as dead
+    code for a separate cleanup; deleting it is out of scope here.
+
+- **Verification:**
+  - `npm run typecheck` — clean.
+  - `npx eslint` (changed files) — clean (no new Fast Refresh warnings; helper
+    functions kept module-local / non-exported).
+  - `npm test` — **33/33 pass** (+4 new `BillAmountField` cases).
+  - `npm run build` — succeeds (existing large-chunk warning only).
+  - Backend needs no change: `/visits/scan` + `register` validators are
+    `z.number()` (finite, 1–9999, **not** `.int()`) and the column is
+    `numeric(10, 2)` — decimals were always accepted server-side.
+
+- **Follow-ups:**
+  - `AmountInput.tsx` + its test are dead code — remove in a cleanup chunk.

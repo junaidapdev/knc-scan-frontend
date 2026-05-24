@@ -5,7 +5,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { BrandedButton, OnboardingShell } from '@/components/common';
-import { TextInput } from '@/components/customer';
+import { BillAmountField, TextInput } from '@/components/customer';
 import { ROUTES } from '@/constants/routes';
 import {
   SCAN_MAX_BILL_AMOUNT_SAR,
@@ -195,70 +195,29 @@ export default function RegisterAmountPage(): JSX.Element {
         <Controller
           name="bill_amount"
           control={control}
-          render={({ field }) => {
-            const display =
-              typeof field.value === 'number' && Number.isFinite(field.value)
-                ? String(field.value)
-                : '';
-            return (
-              <>
-                {/* Big amount display — input itself is the display */}
-                <div
-                  className="relative flex items-baseline justify-center gap-2 overflow-hidden rounded-2xl"
-                  style={{
-                    padding: '28px 24px',
-                    background: '#FFFFFF',
-                    border: errorMsg ? '2px solid #C73B3B' : '2px solid #0D0D0D',
-                    direction: 'ltr',
-                  }}
-                >
-                  <input
-                    id="amount-input"
-                    type="text"
-                    inputMode="decimal"
-                    autoComplete="off"
-                    aria-label={t('scanAmount.inputLabel')}
-                    aria-invalid={Boolean(errorMsg)}
-                    placeholder="0"
-                    value={display}
-                    onChange={(e) => {
-                      const raw = e.target.value.trim();
-                      if (raw === '') {
-                        field.onChange(undefined);
-                        return;
-                      }
-                      const parsed = Number(raw.replace(/,/g, '.'));
-                      field.onChange(Number.isFinite(parsed) ? parsed : raw);
-                    }}
-                    onBlur={field.onBlur}
-                    className="bg-transparent text-center font-display font-black text-obsidian placeholder:text-obsidian/25 focus:outline-none"
-                    style={{
-                      fontSize: 64,
-                      letterSpacing: '-3px',
-                      lineHeight: 1,
-                      width: '60%',
-                      minWidth: 80,
-                    }}
-                  />
-                  <span
-                    className="font-sans font-bold text-obsidian/55"
-                    style={{ fontSize: 18, letterSpacing: 1 }}
-                  >
-                    {t('scanAmount.currency')}
-                  </span>
-                </div>
+          render={({ field }) => (
+            <>
+              <BillAmountField
+                value={
+                  typeof field.value === 'number' ? field.value : undefined
+                }
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                currencyLabel={t('scanAmount.currency')}
+                inputLabel={t('scanAmount.inputLabel')}
+                error={Boolean(errorMsg)}
+              />
 
-                {errorMsg ? (
-                  <p
-                    className="mt-2 font-sans font-medium text-danger"
-                    style={{ fontSize: 13 }}
-                  >
-                    {errorMsg}
-                  </p>
-                ) : null}
-              </>
-            );
-          }}
+              {errorMsg ? (
+                <p
+                  className="mt-2 font-sans font-medium text-danger"
+                  style={{ fontSize: 13 }}
+                >
+                  {errorMsg}
+                </p>
+              ) : null}
+            </>
+          )}
         />
       </form>
     </OnboardingShell>
