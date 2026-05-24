@@ -32,7 +32,7 @@ export const SUPPORTED_LANGUAGES = ['en', 'ar'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export const DEFAULT_LANGUAGE: SupportedLanguage = 'ar';
 
-export const I18N_NAMESPACES = ['common', 'customer'] as const;
+export const I18N_NAMESPACES = ['common', 'customer', 'privacy'] as const;
 export type I18nNamespace = (typeof I18N_NAMESPACES)[number];
 
 // Shown in Profile footer. Kept here so it does not require a runtime

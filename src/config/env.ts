@@ -13,6 +13,7 @@ const envSchema = z.object({
     .default(0.1),
   VITE_APP_RELEASE: z.string().optional().default('dev'),
   VITE_POSTHOG_KEY: z.string().optional().or(z.literal('')),
+  VITE_CLARITY_PROJECT_ID: z.string().optional().or(z.literal('')),
   VITE_APP_NAME: z.string().min(1).default('Kayan Sweets'),
   MODE: z.enum(['development', 'production', 'test']).default('development'),
 });

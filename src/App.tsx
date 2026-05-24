@@ -9,6 +9,7 @@ import {
 import { AppErrorBoundary, RouteGuard } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
 import NotFoundPage from '@/pages/NotFoundPage';
+import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
 import {
   HomePage,
   LockoutPage,
@@ -53,6 +54,9 @@ export default function App(): JSX.Element {
         path={ROUTES.ROOT}
         element={<Navigate to={ROUTES.CUSTOMER.SCAN} replace />}
       />
+
+      {/* Legal — public, no auth required */}
+      <Route path={ROUTES.PRIVACY} element={<PrivacyPolicyPage />} />
 
       {/* Public entry flow */}
       <Route path={ROUTES.CUSTOMER.SCAN} element={<ScanLandingPage />} />

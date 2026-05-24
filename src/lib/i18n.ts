@@ -11,8 +11,10 @@ import {
 } from '@/constants/ui';
 import enCommon from '@/locales/en/common.json';
 import enCustomer from '@/locales/en/customer.json';
+import enPrivacy from '@/locales/en/privacy.json';
 import arCommon from '@/locales/ar/common.json';
 import arCustomer from '@/locales/ar/customer.json';
+import arPrivacy from '@/locales/ar/privacy.json';
 
 const RTL_LANGUAGES: readonly SupportedLanguage[] = ['ar'];
 
@@ -28,8 +30,8 @@ void i18n
   .use(initReactI18next)
   .init({
     resources: {
-      en: { common: enCommon, customer: enCustomer },
-      ar: { common: arCommon, customer: arCustomer },
+      en: { common: enCommon, customer: enCustomer, privacy: enPrivacy },
+      ar: { common: arCommon, customer: arCustomer, privacy: arPrivacy },
     },
     ns: I18N_NAMESPACES as unknown as string[],
     defaultNS: 'common',

@@ -34,6 +34,7 @@ const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
             ref={ref}
             id={inputId}
             type="text"
+            data-clarity-mask="true"
             inputMode="decimal"
             autoComplete="off"
             aria-invalid={Boolean(error)}

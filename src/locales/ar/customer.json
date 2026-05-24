@@ -96,6 +96,8 @@
   "registerAmount": {
     "cta": "احصل على ختمي",
     "consent": "بمتابعتك، فإنك توافق على استلام رسائل من كيان.",
+    "privacyPrefix": "اعرف كيف نتعامل مع بياناتك في",
+    "privacyLink": "سياسة الخصوصية",
     "nameLabel": "اسمك (اختياري)",
     "namePlaceholder": "مثال: محمد",
     "errors": {

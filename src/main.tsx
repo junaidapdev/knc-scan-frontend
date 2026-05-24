@@ -9,10 +9,12 @@ import { TOAST_DURATION_MS } from '@/constants/ui';
 import { AdminAuthProvider } from '@/contexts/AdminAuthContext';
 import { CustomerAuthProvider } from '@/contexts/CustomerAuthContext';
 import { initSentry } from '@/lib/sentry';
+import { initClarity } from '@/lib/clarity';
 import './lib/i18n';
 import './index.css';
 
 initSentry();
+initClarity();
 
 const rootEl = document.getElementById('root');
 if (!rootEl) {

@@ -4,6 +4,7 @@
  */
 export const ROUTES = {
   ROOT: '/',
+  PRIVACY: '/privacy',
   CUSTOMER: {
     SCAN: '/scan',
     PHONE: '/phone',

@@ -76,7 +76,9 @@ const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(
           {label}
         </label>
 
-        <div className="relative" style={{ direction: 'ltr' }}>
+        {/* data-clarity-mask: the typed code renders in the boxes below (not in
+            the transparent input), so mask the whole widget from recordings. */}
+        <div className="relative" style={{ direction: 'ltr' }} data-clarity-mask="true">
           {/* Visual boxes */}
           <div className="flex justify-center gap-3" aria-hidden="true">
             {cells.map((i) => {

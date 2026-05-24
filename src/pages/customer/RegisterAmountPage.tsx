@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { BrandedButton, OnboardingShell } from '@/components/common';
@@ -167,6 +167,18 @@ export default function RegisterAmountPage(): JSX.Element {
           >
             {t('registerAmount.consent')}
           </p>
+          <p
+            className="mt-1 text-center font-sans font-medium text-obsidian/55"
+            style={{ fontSize: 12, lineHeight: 1.5 }}
+          >
+            {t('registerAmount.privacyPrefix')}{' '}
+            <Link
+              to={ROUTES.PRIVACY}
+              className="font-bold text-obsidian underline underline-offset-2"
+            >
+              {t('registerAmount.privacyLink')}
+            </Link>
+          </p>
         </>
       }
     >
@@ -176,13 +188,17 @@ export default function RegisterAmountPage(): JSX.Element {
         noValidate
         className="space-y-4"
       >
-        <TextInput
-          label={t('registerAmount.nameLabel')}
-          placeholder={t('registerAmount.namePlaceholder')}
-          autoComplete="given-name"
-          error={errors.name ? t('registerAmount.errors.nameTooShort') : undefined}
-          {...register('name')}
-        />
+        {/* data-clarity-mask: name is PII — mask it from Clarity recordings
+            regardless of the dashboard masking mode. */}
+        <div data-clarity-mask="true">
+          <TextInput
+            label={t('registerAmount.nameLabel')}
+            placeholder={t('registerAmount.namePlaceholder')}
+            autoComplete="given-name"
+            error={errors.name ? t('registerAmount.errors.nameTooShort') : undefined}
+            {...register('name')}
+          />
+        </div>
 
         <Controller
           name="bill_amount"

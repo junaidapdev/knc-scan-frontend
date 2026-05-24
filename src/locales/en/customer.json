@@ -96,6 +96,8 @@
   "registerAmount": {
     "cta": "Earn my stamp",
     "consent": "By continuing, you agree to receive Kayan messages.",
+    "privacyPrefix": "Learn how we handle your data in our",
+    "privacyLink": "Privacy Policy",
     "nameLabel": "Your name (optional)",
     "namePlaceholder": "e.g. Mohammed",
     "errors": {

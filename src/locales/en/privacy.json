@@ -1,0 +1,82 @@
+{
+  "eyebrow": "Legal",
+  "title": "Privacy Policy",
+  "lastUpdated": "Last updated: 23 May 2026",
+  "intro": "This policy explains what personal data Kayan Sweets collects through its loyalty app, why we collect it, who we share it with, and the choices and rights you have. We aim to comply with Saudi Arabia's Personal Data Protection Law (PDPL).",
+  "back": "Back to app",
+  "sections": [
+    {
+      "heading": "Who we are",
+      "body": "Kayan Sweets operates this loyalty program and the app you are using. For any privacy question, contact us at support@kayansweets.com."
+    },
+    {
+      "heading": "Information we collect",
+      "body": "When you use the loyalty app, we may collect:",
+      "items": [
+        "Your mobile phone number — used to identify you and to send one-time verification codes (OTP) by SMS.",
+        "Your name — optional; used to personalise your card and greeting.",
+        "Purchase amounts you enter at the counter, and the branch you are visiting.",
+        "Your loyalty activity — visits, stamps earned, and rewards issued or redeemed.",
+        "Technical information — device type, IP address, and your language preference.",
+        "Analytics data — see Cookies and analytics below."
+      ]
+    },
+    {
+      "heading": "How we use your information",
+      "body": "We use your data to:",
+      "items": [
+        "Run the loyalty program — award stamps, issue and redeem rewards.",
+        "Verify your identity using one-time codes sent to your phone.",
+        "Protect the program against fraud and abuse, for example daily scan limits.",
+        "Understand and improve how the app is used.",
+        "Send you service messages related to your account."
+      ]
+    },
+    {
+      "heading": "Cookies and analytics",
+      "body": "We use Microsoft Clarity to record app sessions and build heatmaps so we can improve the experience. Sensitive fields — your phone number, verification code, name, and purchase amount — are masked and not captured. We also use Sentry to detect and diagnose technical errors. These tools may set cookies or similar identifiers."
+    },
+    {
+      "heading": "Who we share your data with",
+      "body": "We do not sell your personal data. We share it only with service providers who help us run the app, under appropriate safeguards:",
+      "items": [
+        "Taqnyat — to deliver SMS verification codes.",
+        "Supabase — secure database and authentication hosting.",
+        "Microsoft Clarity — session analytics and heatmaps.",
+        "Sentry — error monitoring.",
+        "Vercel and Fly.io — app and server hosting."
+      ]
+    },
+    {
+      "heading": "International transfers",
+      "body": "Some of our service providers may process data on servers outside Saudi Arabia. Where this happens, we take steps intended to protect your data consistent with the PDPL."
+    },
+    {
+      "heading": "How long we keep your data",
+      "body": "We keep your data for as long as your loyalty account is active. You may ask us to delete your account and personal data at any time, and we will do so unless we are required to keep certain records by law."
+    },
+    {
+      "heading": "Your rights",
+      "body": "Under the PDPL, you have the right to:",
+      "items": [
+        "Access the personal data we hold about you.",
+        "Ask us to correct inaccurate data.",
+        "Ask us to delete your data.",
+        "Withdraw consent where we rely on it.",
+        "Raise a concern with the Saudi Data and Artificial Intelligence Authority (SDAIA)."
+      ]
+    },
+    {
+      "heading": "Children",
+      "body": "The app is intended for adults. We do not knowingly collect data from children without the consent of a parent or guardian."
+    },
+    {
+      "heading": "Changes to this policy",
+      "body": "We may update this policy from time to time. We will post the updated version here and change the last-updated date above."
+    },
+    {
+      "heading": "Contact us",
+      "body": "For any privacy question, or to exercise your rights, email us at support@kayansweets.com."
+    }
+  ]
+}

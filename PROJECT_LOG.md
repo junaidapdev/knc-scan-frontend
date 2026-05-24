@@ -1186,3 +1186,132 @@ Quick polish on the admin frontend after manual smoke test.
 - **Verification:** `npm run lint` (0 errors; same 3 existing Fast Refresh
   warnings), `npm run typecheck`, `npm test` (29/29), and `npm run build`
   (existing chunk-size warning only) all pass.
+
+---
+
+### [2026-05-23] Chunk 16: Microsoft Clarity (session recordings)
+
+- **Built:** Microsoft Clarity (session recordings + heatmaps) on the customer
+  PWA, wired to mirror the existing Sentry telemetry pattern.
+  - `@microsoft/clarity` (npm) initialised programmatically in `src/lib/clarity.ts`
+    (`initClarity()`), called from `main.tsx` right after `initSentry()`.
+  - **Env-gated:** new optional `VITE_CLARITY_PROJECT_ID` in `src/config/env.ts`.
+    No-op (info log) when empty, so dev/preview/test never record. Set it ONLY in
+    the Vercel **production** environment (same control model as `VITE_SENTRY_DSN`).
+    Production project id: `ww0kmmh8t1` (a public client identifier, not a secret).
+  - **Customer PWA only:** `initClarity()` skips when the boot path is under
+    `ROUTES.ADMIN.ROOT` (`/admin`). The admin console exposes customer PII + the
+    admin password screen, so it is never recorded. Admins land directly on
+    `/admin/*`; customers can't reach it.
+  - **CSP:** added Clarity's domains to the `vercel.json` Content-Security-Policy
+    (Chunk 15) — without this, Clarity is silently blocked in production:
+    `script-src`/`script-src-elem` += `https://www.clarity.ms https://*.clarity.ms`;
+    `connect-src` & `img-src` += `https://*.clarity.ms https://c.bing.com`.
+
+- **Privacy — sensitive inputs force-masked** (`data-clarity-mask="true"`), so
+  masking does NOT depend on the dashboard mode:
+  - `OtpInput` — masks the **digit-box container** (the typed code renders in the
+    boxes, not in the transparent `<input>`, so masking the input alone would
+    miss it).
+  - `PhoneInput`, `AmountInput` — the `<input>` element.
+  - Registration **name** field — wrapped in a masked `<div>` at the call site
+    in `RegisterAmountPage` (the generic `TextInput` stays unmasked for reuse).
+  - The admin password is never recorded (admin console excluded), and
+    `<input type="password">` is masked by Clarity by default anyway.
+
+- **Files changed:** `src/config/env.ts`, `src/lib/clarity.ts` (new),
+  `src/main.tsx`, `src/components/customer/{OtpInput,PhoneInput,AmountInput}.tsx`,
+  `src/pages/customer/RegisterAmountPage.tsx`, `vercel.json`, `.env.example`,
+  `README.md`, `package.json` / `package-lock.json` (`@microsoft/clarity@1.0.2`),
+  and `PROJECT_LOG.md`.
+
+- **Verification:** `npm run typecheck`, `npm run lint` (0 errors; same 3
+  pre-existing Fast Refresh warnings), `npm test` (29/29), `npm run build`
+  (Clarity bundled; existing chunk-size warning only) all pass. `vercel.json`
+  re-validated as JSON.
+
+- **Human actions before recordings appear:**
+  1. Set `VITE_CLARITY_PROJECT_ID=ww0kmmh8t1` in Vercel → Project → Settings →
+     Environment Variables, **Production only**, then redeploy.
+  2. In the Clarity dashboard, set masking to **Strict** (Settings → Masking) for
+     defense in depth on top of the per-field masks.
+  3. Privacy/PDPL: confirm session recording of customers is covered by the
+     privacy policy / consent posture. Clarity exposes a `Clarity.consent()` API
+     if we later want to gate recording on the existing `consent_marketing` flag.
+
+- **Follow-ups:**
+  - Optional: gate Clarity behind `consent_marketing` via `Clarity.consent()`.
+  - Optional: wire `analytics.ts` `track()` events to Clarity custom tags
+    (`Clarity.setTag`) so recordings are filterable by funnel step.
+
+---
+
+### [2026-05-23] Chunk 17: Privacy policy page (DRAFT)
+
+- **Built:** a public, bilingual privacy policy page so Clarity (Chunk 16) and
+  the app's general PII collection are disclosed — the app had no privacy policy
+  at all, which Clarity surfaced. **Clarity stays parked** (uncommitted/undeployed)
+  until the policy is reviewed and live.
+  - New route `ROUTES.PRIVACY` (`/privacy`), public/no-auth, wired in `App.tsx`
+    as a direct (non-lazy) import like `NotFoundPage`.
+  - New `PrivacyPolicyPage` (`src/pages/PrivacyPolicyPage.tsx`) built on
+    `ScreenShell` (inherits the Kayan logo, language toggle, RTL, page
+    transition). Renders a prominent **DRAFT** banner plus sections rendered
+    **data-driven** from the locale (`heading` / optional `body` / optional
+    `items[]`).
+  - New `privacy` i18n namespace (AR + EN) — `I18N_NAMESPACES` extended in
+    `constants/ui.ts`, registered in `lib/i18n.ts`, content in
+    `src/locales/{en,ar}/privacy.json`.
+  - Linked from the registration CTA fine-print (`RegisterAmountPage`), the
+    point where marketing consent is implied — new `registerAmount.privacyPrefix`
+    + `privacyLink` keys (AR + EN).
+
+- **Content (draft, PDPL-aware — needs legal review):** who we are; data
+  collected (phone, optional name, bill amounts, branch, loyalty activity,
+  device/IP/language, analytics); how it's used; cookies/analytics (Clarity with
+  masked fields + Sentry); processors (Taqnyat, Supabase, Microsoft Clarity,
+  Sentry, Vercel, Fly.io); international transfers; retention; PDPL rights
+  (access/correct/delete/withdraw consent/SDAIA complaint); children; changes;
+  contact (`support@kayansweets.com`).
+
+- **Files changed:** `src/pages/PrivacyPolicyPage.tsx` (new), `src/App.tsx`,
+  `src/constants/routes.ts`, `src/constants/ui.ts`, `src/lib/i18n.ts`,
+  `src/locales/{en,ar}/privacy.json` (new), `src/locales/{en,ar}/customer.json`,
+  `src/pages/customer/RegisterAmountPage.tsx`, and `PROJECT_LOG.md`.
+
+- **Verification:** all four new/edited JSON locale files parse; `npm run
+  typecheck`, `npm run lint` (0 errors; same 3 pre-existing Fast Refresh
+  warnings), `npm test` (29/29), and `npm run build` (PWA regenerated) all pass.
+
+- **Human actions / follow-ups:**
+  - **Legal review of the draft copy** (both languages) before relying on it;
+    then remove the DRAFT banner (`privacy.draftBadge` / `privacy.draftNotice`).
+  - Confirm the listed processors/transfers match the actual production setup.
+  - Consider linking `/privacy` from a persistent spot too (e.g. Profile) — for
+    now it is on the registration step (the consent point).
+  - Once the policy is live, give the green light to ship Clarity (Chunk 16):
+    commit + redeploy.
+
+---
+
+### [2026-05-23] Chunk 18: Finalize privacy policy + Clarity go-live
+
+- **Built:** owner reviewed and approved the Chunk 17 policy copy, so removed the
+  DRAFT banner from `PrivacyPolicyPage` and the now-unused `draftBadge` /
+  `draftNotice` locale keys (AR + EN). The policy is now presented as final.
+- **Go-live:** committed Chunk 16 (Clarity) + Chunk 17 (privacy) + this change
+  together and pushed to `main` → Vercel production deploy. Shipping the policy
+  and Clarity in the SAME deploy means recording only ever begins once the
+  privacy policy is live.
+- **Files changed:** `src/pages/PrivacyPolicyPage.tsx`,
+  `src/locales/{en,ar}/privacy.json`, `PROJECT_LOG.md`.
+- **Verification:** locale JSON valid; no dangling `draft*` refs; `npm run
+  typecheck`, `npm run lint` (0 errors), `npm test` (29/29), `npm run build` all
+  pass.
+- **Human actions remaining (Clarity):**
+  - Set Clarity dashboard masking to **Strict** (the OTP/phone/name/amount inputs
+    are already force-masked in code, so this is defense in depth).
+  - Confirm `VITE_CLARITY_PROJECT_ID` is scoped to the **Production** environment
+    in Vercel.
+  - After the deploy finishes, open a recording in Clarity and confirm the
+    sensitive fields render masked.

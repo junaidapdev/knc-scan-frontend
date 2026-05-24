@@ -41,6 +41,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             ref={ref}
             id={inputId}
             type="tel"
+            data-clarity-mask="true"
             inputMode="numeric"
             autoComplete="tel-national"
             maxLength={SAUDI_PHONE_TAIL_LENGTH}

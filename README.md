@@ -58,6 +58,7 @@ read `import.meta.env` elsewhere.
 | `VITE_SENTRY_TRACES_SAMPLE_RATE` | optional | Perf sample rate, default `0.1`. |
 | `VITE_APP_RELEASE` | optional | Release tag sent to Sentry; default `dev`. On Vercel set `VITE_APP_RELEASE=$VERCEL_GIT_COMMIT_SHA` so Sentry issues are grouped per deploy. |
 | `VITE_POSTHOG_KEY` | optional (deferred) | Reserved for post-V1 product analytics; not yet wired. |
+| `VITE_CLARITY_PROJECT_ID` | optional | Microsoft Clarity project id (session recordings + heatmaps). Empty = disabled. Set **only in the Vercel production environment** so dev/preview don't record. **Customer PWA only** — the admin console is never recorded, and OTP/phone/name/bill-amount inputs are force-masked. Set Clarity dashboard masking to **Strict**. |
 | `VITE_SUPABASE_URL` | optional | Reserved; customer reads go through the backend. |
 | `VITE_SUPABASE_ANON_KEY` | optional | Reserved as above. |
 
@@ -112,6 +113,8 @@ Set in Project → Settings → Environment Variables:
   release tagging.
 - `VITE_APP_NAME`
 - `VITE_POSTHOG_KEY` (optional, deferred)
+- `VITE_CLARITY_PROJECT_ID` (optional) — set in the **Production** environment
+  only (not Preview/Development) so only real production traffic is recorded.
 
 ## Known limitations
 
